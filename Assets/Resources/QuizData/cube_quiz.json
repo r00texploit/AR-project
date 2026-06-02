@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "questionId": "cub_001",
+      "lessonId": "cube",
+      "questionText": "How many faces does a cube have?",
+      "options": ["4", "6", "8", "12"],
+      "correctIndex": 1,
+      "explanation": "A cube has exactly 6 faces, all of which are squares."
+    },
+    {
+      "questionId": "cub_002",
+      "lessonId": "cube",
+      "questionText": "What is the surface area of a cube with side length 3?",
+      "options": ["27", "54", "36", "18"],
+      "correctIndex": 1,
+      "explanation": "Surface Area = 6 × s² = 6 × 9 = 54"
+    },
+    {
+      "questionId": "cub_003",
+      "lessonId": "cube",
+      "questionText": "What is the volume of a cube with side length 4?",
+      "options": ["16", "48", "64", "96"],
+      "correctIndex": 2,
+      "explanation": "Volume = s³ = 4 × 4 × 4 = 64"
+    },
+    {
+      "questionId": "cub_004",
+      "lessonId": "cube",
+      "questionText": "How many edges does a cube have?",
+      "options": ["8", "10", "12", "6"],
+      "correctIndex": 2,
+      "explanation": "A cube has 12 edges: 4 on top, 4 on bottom, and 4 vertical."
+    },
+    {
+      "questionId": "cub_005",
+      "lessonId": "cube",
+      "questionText": "If a cube has side length s, which formula gives its volume?",
+      "options": ["V = 6s²", "V = s²", "V = 4s³", "V = s³"],
+      "correctIndex": 3,
+      "explanation": "Volume of a cube = side × side × side = s³"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<linker>
+  <!-- Preserve all types in the main assembly to prevent IL2CPP stripping -->
+  <assembly fullname="Assembly-CSharp">
+    <namespace fullname="" preserve="all"/>
+  </assembly>
+  <!-- Preserve Newtonsoft JSON if used -->
+  <assembly fullname="Newtonsoft.Json" preserve="all"/>
+  <!-- Preserve Unity serialization for JsonUtility -->
+  <assembly fullname="UnityEngine.JSONSerializeModule" preserve="all"/>
+</linker>

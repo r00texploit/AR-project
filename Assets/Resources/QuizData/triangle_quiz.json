@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "questionId": "tri_001",
+      "lessonId": "triangle",
+      "questionText": "What is the perimeter of a triangle with sides A=3, B=4, C=5?",
+      "options": ["10", "12", "14", "8"],
+      "correctIndex": 1,
+      "explanation": "Perimeter = A + B + C = 3 + 4 + 5 = 12"
+    },
+    {
+      "questionId": "tri_002",
+      "lessonId": "triangle",
+      "questionText": "A triangle has sides 5, 12, and 13. What type of triangle is this?",
+      "options": ["Equilateral", "Isosceles", "Right-angled", "Obtuse"],
+      "correctIndex": 2,
+      "explanation": "5² + 12² = 25 + 144 = 169 = 13². It satisfies the Pythagorean theorem."
+    },
+    {
+      "questionId": "tri_003",
+      "lessonId": "triangle",
+      "questionText": "Using Heron's formula, what is the area of a triangle with sides 3, 4, 5?",
+      "options": ["6", "7.5", "10", "5"],
+      "correctIndex": 0,
+      "explanation": "s = (3+4+5)/2 = 6. Area = √(6×3×2×1) = √36 = 6"
+    },
+    {
+      "questionId": "tri_004",
+      "lessonId": "triangle",
+      "questionText": "Can a triangle have sides of lengths 1, 2, and 10?",
+      "options": ["Yes, always", "No, violates triangle inequality", "Only if right-angled", "Only if equilateral"],
+      "correctIndex": 1,
+      "explanation": "Triangle inequality: each side must be less than the sum of the other two. 1+2=3 < 10, so this is invalid."
+    },
+    {
+      "questionId": "tri_005",
+      "lessonId": "triangle",
+      "questionText": "What is the perimeter formula for a triangle with sides A, B, C?",
+      "options": ["P = A × B × C", "P = A + B + C", "P = A² + B²", "P = (A + B + C) / 2"],
+      "correctIndex": 1,
+      "explanation": "Perimeter is the total length of all sides: P = A + B + C"
+    }
+  ]
+}

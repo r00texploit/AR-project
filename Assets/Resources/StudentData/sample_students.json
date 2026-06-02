@@ -1,0 +1,19 @@
+{
+  "students": [
+    {"studentId": "s001", "studentName": "Alice Johnson", "gradeLevel": "Grade 7"},
+    {"studentId": "s002", "studentName": "Bob Smith",     "gradeLevel": "Grade 7"},
+    {"studentId": "s003", "studentName": "Carol Davis",   "gradeLevel": "Grade 8"},
+    {"studentId": "s004", "studentName": "David Lee",     "gradeLevel": "Grade 8"},
+    {"studentId": "s005", "studentName": "Emma Wilson",   "gradeLevel": "Grade 6"}
+  ],
+  "quizResults": [
+    {"studentId":"s001","studentName":"Alice Johnson","lessonId":"triangle","lessonTitle":"Triangle Lesson","score":4,"totalQuestions":5,"percentage":80.0,"timestamp":"2024-01-15T10:30:00"},
+    {"studentId":"s001","studentName":"Alice Johnson","lessonId":"physics",  "lessonTitle":"Physics Lesson", "score":5,"totalQuestions":5,"percentage":100.0,"timestamp":"2024-01-16T11:00:00"},
+    {"studentId":"s002","studentName":"Bob Smith",    "lessonId":"triangle","lessonTitle":"Triangle Lesson","score":3,"totalQuestions":5,"percentage":60.0,"timestamp":"2024-01-15T14:00:00"},
+    {"studentId":"s002","studentName":"Bob Smith",    "lessonId":"cube",    "lessonTitle":"Cube Lesson",    "score":4,"totalQuestions":5,"percentage":80.0,"timestamp":"2024-01-17T09:30:00"},
+    {"studentId":"s003","studentName":"Carol Davis",  "lessonId":"physics", "lessonTitle":"Physics Lesson", "score":2,"totalQuestions":5,"percentage":40.0,"timestamp":"2024-01-15T15:00:00"},
+    {"studentId":"s003","studentName":"Carol Davis",  "lessonId":"triangle","lessonTitle":"Triangle Lesson","score":5,"totalQuestions":5,"percentage":100.0,"timestamp":"2024-01-18T10:00:00"},
+    {"studentId":"s004","studentName":"David Lee",    "lessonId":"cube",    "lessonTitle":"Cube Lesson",    "score":3,"totalQuestions":5,"percentage":60.0,"timestamp":"2024-01-16T13:00:00"},
+    {"studentId":"s005","studentName":"Emma Wilson",  "lessonId":"physics", "lessonTitle":"Physics Lesson", "score":4,"totalQuestions":5,"percentage":80.0,"timestamp":"2024-01-17T11:30:00"}
+  ]
+}

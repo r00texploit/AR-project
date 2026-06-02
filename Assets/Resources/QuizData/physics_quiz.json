@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "questionId": "phy_001",
+      "lessonId": "physics",
+      "questionText": "A ball moves at 3 m/s for 4 seconds. How far does it travel?",
+      "options": ["7 m", "12 m", "1.33 m", "0.75 m"],
+      "correctIndex": 1,
+      "explanation": "d = v × t = 3 × 4 = 12 metres"
+    },
+    {
+      "questionId": "phy_002",
+      "lessonId": "physics",
+      "questionText": "In the formula d = v × t, what does 'v' represent?",
+      "options": ["Volume", "Velocity (speed)", "Vertical distance", "Variation"],
+      "correctIndex": 1,
+      "explanation": "'v' stands for velocity, which is the speed of the object."
+    },
+    {
+      "questionId": "phy_003",
+      "lessonId": "physics",
+      "questionText": "A ball travels 15 metres in 5 seconds. What is its speed?",
+      "options": ["75 m/s", "10 m/s", "3 m/s", "20 m/s"],
+      "correctIndex": 2,
+      "explanation": "v = d ÷ t = 15 ÷ 5 = 3 m/s"
+    },
+    {
+      "questionId": "phy_004",
+      "lessonId": "physics",
+      "questionText": "If you double the speed of the ball, what happens to the distance in the same time?",
+      "options": ["Stays the same", "Doubles", "Halves", "Quadruples"],
+      "correctIndex": 1,
+      "explanation": "Since d = v × t, doubling v while keeping t the same doubles d."
+    },
+    {
+      "questionId": "phy_005",
+      "lessonId": "physics",
+      "questionText": "What unit is speed measured in for this simulation?",
+      "options": ["metres per hour", "kilometres per second", "metres per second", "centimetres per minute"],
+      "correctIndex": 2,
+      "explanation": "In this lesson, speed is shown in metres per second (m/s)."
+    }
+  ]
+}
