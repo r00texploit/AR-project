@@ -22,6 +22,21 @@ using AREducation.Utils;
 /// </summary>
 public class AREducationSceneSetup : Editor
 {
+    // ─── Font helper ───────────────────────────────────────────────────────────
+    private static TMP_FontAsset _defaultFont;
+    private static TMP_FontAsset DefaultFont
+    {
+        get
+        {
+            if (_defaultFont != null) return _defaultFont;
+            _defaultFont = TMP_Settings.defaultFontAsset;
+            if (_defaultFont == null)
+                _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                    "Packages/com.unity.textmeshpro/Resources/Fonts & Materials/LiberationSans SDF.asset");
+            return _defaultFont;
+        }
+    }
+
     // ─── Entry points ──────────────────────────────────────────────────────────
 
     [MenuItem("AR Education/Setup All Scenes")]
@@ -33,15 +48,18 @@ public class AREducationSceneSetup : Editor
         SetupTeacherDashboardScene();
         SetupBuildSettings();
 
-        EditorUtility.DisplayDialog("AR Education Setup Complete",
-            "All four scenes have been created and saved.\n\n" +
-            "Next steps:\n" +
-            "1. Edit > Project Settings > XR Plug-in Management\n" +
-            "   ► Android tab: enable ARCore\n" +
-            "   ► iOS tab:     enable ARKit\n" +
-            "2. File > Build Settings > Switch Platform > Android\n" +
-            "3. Build and Run on an ARCore-capable device.",
-            "Got it!");
+        if (!Application.isBatchMode)
+        {
+            EditorUtility.DisplayDialog("AR Education Setup Complete",
+                "All four scenes have been created and saved.\n\n" +
+                "Next steps:\n" +
+                "1. Edit > Project Settings > XR Plug-in Management\n" +
+                "   ► Android tab: enable ARCore\n" +
+                "   ► iOS tab:     enable ARKit\n" +
+                "2. File > Build Settings > Switch Platform > Android\n" +
+                "3. Build and Run on an ARCore-capable device.",
+                "Got it!");
+        }
     }
 
     [MenuItem("AR Education/1 – Setup Main Menu Scene")]
@@ -219,7 +237,7 @@ public class AREducationSceneSetup : Editor
         var titleTxt   = CreateTMPText(topBar.transform, "LessonTitle", "Triangle Lesson",
             26, FontStyles.Bold, Color.white, new Rect(-200, -20, 400, 50));
         var backBtn    = CreateButton(topBar.transform, "BackButton", "< Back", 0,
-            new Color(0.6f,0.2f,0.2f), width: 160, height: 55, anchorX: -420, anchorY: 0);
+            new Color(0.6f,0.2f,0.2f), width: 160, height: 55, anchorX: -420);
 
         // Lesson switcher
         var switcher  = CreatePanel(hudCanvasGO.transform, "LessonSwitcher",
@@ -476,7 +494,7 @@ public class AREducationSceneSetup : Editor
 
         // Back button
         var backBtn = CreateButton(canvasGO.transform, "BackButton", "< Back",
-            850, new Color(0.4f,0.2f,0.2f), width: 150, height: 60, anchorX: -450, anchorY: 0);
+            850, new Color(0.4f,0.2f,0.2f), width: 150, height: 60, anchorX: -450);
 
         // QuizManager
         var qmGO = new GameObject("QuizManager");
@@ -732,6 +750,7 @@ public class AREducationSceneSetup : Editor
             var cellRT = go.AddComponent<RectTransform>();
             cellRT.sizeDelta = new Vector2(w, 60);
             var t = go.AddComponent<TextMeshProUGUI>();
+            t.font       = DefaultFont;
             t.text       = txt;
             t.fontSize   = 16;
             t.color      = Color.white;
@@ -812,6 +831,7 @@ public class AREducationSceneSetup : Editor
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
         var t = go.AddComponent<TextMeshProUGUI>();
+        t.font       = DefaultFont;
         t.text       = text;
         t.fontSize   = fontSize;
         t.fontStyle  = style;
@@ -846,6 +866,7 @@ public class AREducationSceneSetup : Editor
         var textGO = new GameObject("Label");
         textGO.transform.SetParent(go.transform, false);
         var t = textGO.AddComponent<TextMeshProUGUI>();
+        t.font       = DefaultFont;
         t.text       = label;
         t.fontSize   = 22;
         t.fontStyle  = FontStyles.Bold;
@@ -872,6 +893,7 @@ public class AREducationSceneSetup : Editor
         var textGO = new GameObject("Label");
         textGO.transform.SetParent(go.transform, false);
         var t = textGO.AddComponent<TextMeshProUGUI>();
+        t.font = DefaultFont;
         t.text = label; t.fontSize = 18; t.color = Color.white;
         t.alignment = TextAlignmentOptions.Center;
         var trt = textGO.GetComponent<RectTransform>();
@@ -892,6 +914,7 @@ public class AREducationSceneSetup : Editor
         var lblGO = new GameObject("Label");
         lblGO.transform.SetParent(container.transform, false);
         var lbl   = lblGO.AddComponent<TextMeshProUGUI>();
+        lbl.font      = DefaultFont;
         lbl.text      = labelText;
         lbl.fontSize  = 18;
         lbl.color     = Color.white;
@@ -951,11 +974,13 @@ public class AREducationSceneSetup : Editor
         var phGO  = new GameObject("Placeholder");
         phGO.transform.SetParent(textAreaGO.transform, false);
         var phT = phGO.AddComponent<TextMeshProUGUI>();
+        phT.font = DefaultFont;
         phT.text = placeholder; phT.fontSize = 18;
         phT.color = new Color(0.5f,0.5f,0.5f);
         var inputTextGO = new GameObject("Text");
         inputTextGO.transform.SetParent(textAreaGO.transform, false);
         var inpT = inputTextGO.AddComponent<TextMeshProUGUI>();
+        inpT.font = DefaultFont;
         inpT.fontSize = 18; inpT.color = Color.white;
 
         input.textViewport    = textAreaGO.GetComponent<RectTransform>();
@@ -985,6 +1010,7 @@ public class AREducationSceneSetup : Editor
         var labelGO = new GameObject("Label");
         labelGO.transform.SetParent(go.transform, false);
         var lt = labelGO.AddComponent<TextMeshProUGUI>();
+        lt.font = DefaultFont;
         lt.text = label; lt.fontSize = 18; lt.color = Color.white;
 
         toggle.targetGraphic = bgImg;
@@ -1012,7 +1038,7 @@ public class AREducationSceneSetup : Editor
 
     // ─── Build Settings ─────────────────────────────────────────────────────
 
-    private static void SetupBuildSettings()
+    public static void SetupBuildSettings()
     {
         EditorBuildSettings.scenes = new[]
         {
