@@ -1,0 +1,109 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:        # manual trigger from GitHub UI → Actions tab
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── 2. Cache Unity Library folder ────────────────────────────────────────
+      #  Speeds up repeat builds from ~35 min → ~12 min
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Android-
+            Library-
+
+      # ── 3. Build APK with GameCI ──────────────────────────────────────────────
+      #  unityVersion: auto  →  reads version from ProjectSettings.asset
+      - name: Build Android APK
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform:        Android
+          unityVersion:          auto
+          buildName:             AR-Education-MVP
+          buildsPath:            builds
+          androidExportType:     androidPackage   # .apk (not .aab) for sideloading
+          androidKeystoreName:   ""
+          androidKeystoreBase64: ""
+          androidKeystorePass:   ""
+          androidKeyaliasName:   ""
+          androidKeyaliasPass:   ""
+
+      # ── 4. Rename APK with version + run number ───────────────────────────────
+      - name: Rename APK
+        run: |
+          mkdir -p dist
+          cp builds/Android/*.apk \
+             dist/AR-Education-MVP-v1.0-build${{ github.run_number }}.apk
+
+      # ── 5. Upload APK as downloadable artifact (kept 30 days) ────────────────
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-build-${{ github.run_number }}
+          path: dist/*.apk
+          retention-days: 30
+          if-no-files-found: error
+
+      # ── 6. Print download instructions in the job summary ────────────────────
+      - name: Write job summary
+        run: |
+          echo "## ✅ Android APK Ready" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build:** \`#${{ github.run_number }}\`  " >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`  " >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### How to install" >> $GITHUB_STEP_SUMMARY
+          echo "1. Download \`APK-build-${{ github.run_number }}\` from the Artifacts section below" >> $GITHUB_STEP_SUMMARY
+          echo "2. Transfer the \`.apk\` to your Android phone" >> $GITHUB_STEP_SUMMARY
+          echo "3. Enable **Install from unknown sources** in Android Settings" >> $GITHUB_STEP_SUMMARY
+          echo "4. Open the \`.apk\` file and install" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Device must support **ARCore** (Android 7.0 / API 24+)" >> $GITHUB_STEP_SUMMARY
+
+      # ── 7. Comment download link on pull requests ─────────────────────────────
+      - name: Comment APK link on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: [
+                `## 📱 Android APK Ready — Build #${context.runNumber}`,
+                ``,
+                `[⬇️ Download APK from Actions](${url})`,
+                ``,
+                `**Install steps:**`,
+                `1. Download the artifact from the link above`,
+                `2. Transfer \`.apk\` to your Android device`,
+                `3. Settings → Install unknown apps → Allow`,
+                `4. Tap the \`.apk\` to install`,
+                ``,
+                `> Requires ARCore support (Android 7.0+)`
+              ].join('\n')
+            });
