@@ -1,18 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using AREducation.Utils;
 
 namespace AREducation.Lessons
 {
     /// <summary>
     /// Physics lesson: simulates constant-velocity ball motion.
     /// Formula: d = v × t
+    /// Enhanced with glowing ball material and particle trail effects.
     /// </summary>
     public class PhysicsLessonController : LessonBase
     {
         [Header("3D Objects")]
         [SerializeField] private Transform    ballTransform;
         [SerializeField] private TrailRenderer ballTrail;
+        [SerializeField] private MeshRenderer ballRenderer;
+
+        [Header("Visual Effects")]
+        [SerializeField] private bool enableGlow = true;
+        [SerializeField] private bool enableTrail = true;
 
         [Header("UI – Display Labels")]
         [SerializeField] private TMP_Text labelSpeed;
@@ -42,6 +49,9 @@ namespace AREducation.Lessons
         {
             LessonId = "physics";
 
+            // Setup enhanced materials
+            SetupMaterials();
+
             if (ballTransform != null)
                 _startPos = ballTransform.localPosition;
 
@@ -51,6 +61,27 @@ namespace AREducation.Lessons
             btnSlowDown?.onClick.AddListener(() => AdjustSpeed(-SpeedStep));
 
             UpdateUI();
+        }
+
+        private void SetupMaterials()
+        {
+            // Setup ball material
+            if (ballRenderer == null && ballTransform != null)
+                ballRenderer = ballTransform.GetComponent<MeshRenderer>();
+
+            if (ballRenderer != null && enableGlow)
+            {
+                ballRenderer.material = LessonMaterials.CreatePhysicsBallMaterial();
+            }
+
+            // Setup trail material
+            if (ballTrail != null && enableTrail)
+            {
+                ballTrail.material = LessonMaterials.CreatePhysicsTrailMaterial();
+                ballTrail.startWidth = 0.05f;
+                ballTrail.endWidth = 0.01f;
+                ballTrail.time = 2f;
+            }
         }
 
         protected override void OnReset() => ResetBall();

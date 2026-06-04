@@ -9,6 +9,7 @@ namespace AREducation.Lessons
     /// <summary>
     /// Cube lesson: tap a face to highlight it, slider adjusts cube size.
     /// Displays surface area and volume formulas.
+    /// Enhanced with multi-color face materials for educational clarity.
     /// </summary>
     public class CubeLessonController : LessonBase
     {
@@ -20,6 +21,10 @@ namespace AREducation.Lessons
         [Header("Materials")]
         [SerializeField] private Material defaultMaterial;
         [SerializeField] private Material highlightMaterial;
+        [SerializeField] private bool useMultiColorFaces = true;
+
+        private Material[] _faceMaterials;
+        private int _highlightedFace = -1;
 
         [Header("UI")]
         [SerializeField] private TMP_Text labelFaceInfo;
@@ -28,7 +33,6 @@ namespace AREducation.Lessons
         [SerializeField] private Slider   sizeSlider;
 
         private float _size = 1f;
-        private int   _highlightedFace = -1;
 
         private static readonly string[] FaceNames =
             { "Front Face", "Back Face", "Left Face", "Right Face", "Top Face", "Bottom Face" };
@@ -44,9 +48,8 @@ namespace AREducation.Lessons
         {
             LessonId = "cube";
 
-            // Create runtime materials if none assigned
-            if (defaultMaterial   == null) defaultMaterial   = CreateMat(new Color(0.3f, 0.6f, 1f));
-            if (highlightMaterial == null) highlightMaterial = CreateMat(Color.yellow);
+            // Setup enhanced materials
+            SetupMaterials();
 
             if (sizeSlider != null)
             {
@@ -58,6 +61,35 @@ namespace AREducation.Lessons
 
             UpdateMesh();
             UpdateLabels();
+        }
+
+        private void SetupMaterials()
+        {
+            // Create materials using LessonMaterials system
+            if (useMultiColorFaces)
+            {
+                // Create 6 different colored materials for each face
+                _faceMaterials = LessonMaterials.CreateCubeFaceMaterials();
+
+                if (cubeMeshRenderer != null)
+                {
+                    cubeMeshRenderer.materials = _faceMaterials;
+                }
+
+                // Create highlight material
+                highlightMaterial = LessonMaterials.CreateCubeHighlightMaterial();
+            }
+            else
+            {
+                // Fallback to single material
+                if (defaultMaterial == null)
+                    defaultMaterial = LessonMaterials.CreateCubeFaceMaterials()[0];
+                if (highlightMaterial == null)
+                    highlightMaterial = LessonMaterials.CreateCubeHighlightMaterial();
+
+                if (cubeMeshRenderer != null)
+                    cubeMeshRenderer.material = defaultMaterial;
+            }
         }
 
         protected override void OnReset()

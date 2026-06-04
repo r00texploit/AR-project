@@ -8,12 +8,18 @@ namespace AREducation.Lessons
     /// <summary>
     /// Triangle lesson: three sliders control side lengths A, B, C.
     /// Mesh updates in real time; perimeter and area are recalculated and displayed.
+    /// Enhanced with educational materials and visual effects.
     /// </summary>
     public class TriangleLessonController : LessonBase
     {
         [Header("3D Objects")]
         [SerializeField] private MeshFilter   triangleMeshFilter;
         [SerializeField] private LineRenderer perimeterOutline;
+        [SerializeField] private MeshRenderer triangleMeshRenderer;
+
+        [Header("Visual Effects")]
+        [SerializeField] private bool enableGlowEffect = true;
+        [SerializeField] private float glowIntensity = 0.2f;
 
         [Header("UI – Sliders")]
         [SerializeField] private Slider sliderA;
@@ -41,6 +47,9 @@ namespace AREducation.Lessons
         {
             LessonId = "triangle";
 
+            // Create enhanced materials
+            SetupMaterials();
+
             ConfigureSlider(sliderA, MinSide, MaxSide, _sideA, v => { _sideA = v; Validate(); });
             ConfigureSlider(sliderB, MinSide, MaxSide, _sideB, v => { _sideB = v; Validate(); });
             ConfigureSlider(sliderC, MinSide, MaxSide, _sideC, v => { _sideC = v; Validate(); });
@@ -53,6 +62,33 @@ namespace AREducation.Lessons
                 labelWarning.gameObject.SetActive(false);
 
             UpdateMesh();
+        }
+
+        private void SetupMaterials()
+        {
+            // Get or create mesh renderer
+            if (triangleMeshRenderer == null && triangleMeshFilter != null)
+                triangleMeshRenderer = triangleMeshFilter.GetComponent<MeshRenderer>();
+
+            if (triangleMeshRenderer == null && triangleMeshFilter != null)
+            {
+                triangleMeshRenderer = triangleMeshFilter.gameObject.AddComponent<MeshRenderer>();
+            }
+
+            if (triangleMeshRenderer != null)
+            {
+                // Create educational blue material with glow
+                triangleMeshRenderer.material = LessonMaterials.CreateTriangleMaterial();
+            }
+
+            // Setup outline
+            if (perimeterOutline != null)
+            {
+                perimeterOutline.material = LessonMaterials.CreateOutlineMaterial(
+                    new Color(1f, 0.3f, 0.2f, 1f), 0.05f);
+                perimeterOutline.startWidth = 0.05f;
+                perimeterOutline.endWidth = 0.05f;
+            }
         }
 
         protected override void OnReset()
