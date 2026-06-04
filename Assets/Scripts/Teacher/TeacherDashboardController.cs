@@ -108,8 +108,7 @@ namespace AREducation.Teacher
             var go   = new GameObject("ResultRow");
             go.transform.SetParent(listContent, false);
             var text = go.AddComponent<TMP_Text>();
-            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") as TMP_FontAsset
-                        ?? TMP_Settings.defaultFontAsset;
+            text.font = TMP_Settings.defaultFontAsset;
             text.fontSize = 18;
             text.text     = $"{result.studentName}  |  " +
                             $"{result.lessonId}  |  " +
