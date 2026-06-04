@@ -47,7 +47,8 @@ namespace AREducation.AR
                 yield return ARSession.CheckAvailability();
             }
 
-            if (ARSession.availability == ARSessionAvailability.NotSupported)
+            // Check if AR is supported based on session state
+            if (ARSession.state == ARSessionState.Unsupported)
             {
                 arInitializingPanel?.SetActive(false);
                 arNotSupportedPanel?.SetActive(true);
