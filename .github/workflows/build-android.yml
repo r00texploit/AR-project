@@ -25,12 +25,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-Android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          key: Library-Android-v2-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
+            Library-Android-v2-
             Library-Android-
             Library-
 
-      # ── 3. Build APK with GameCI ──────────────────────────────────────────────
+      # ── 3. Clear Library cache if needed (uncomment to force clean build)
+      # - name: Clear Library Cache
+      #   run: rm -rf Library
+
+      # ── 4. Build APK with GameCI ──────────────────────────────────────────────
       #  unityVersion: auto  →  reads version from ProjectSettings.asset
       - name: Build Android APK
         uses: game-ci/unity-builder@v4
