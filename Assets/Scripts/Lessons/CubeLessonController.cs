@@ -109,11 +109,13 @@ namespace AREducation.Lessons
 
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             if (!Physics.Raycast(ray, out RaycastHit hit)) return;
-            if (hit.collider.gameObject != gameObject) return;
+            if (hit.collider.gameObject != gameObject &&
+                !hit.collider.transform.IsChildOf(transform)) return;
 
             // Determine face from the hit normal in local space
             Vector3 localNorm = transform.InverseTransformDirection(hit.normal).normalized;
             _highlightedFace  = GetClosestFaceIndex(localNorm);
+            ApplyMaterials();
             UpdateLabels();
         }
 
@@ -129,10 +131,34 @@ namespace AREducation.Lessons
         {
             Mesh mesh = MeshGenerator.GenerateCube(_size);
             if (cubeMeshFilter  != null) cubeMeshFilter.mesh = mesh;
-            if (cubeMeshRenderer != null)
-                cubeMeshRenderer.material = defaultMaterial;
+            ApplyMaterials();
             if (cubeCollider != null)
+            {
                 cubeCollider.size = Vector3.one * _size * 0.1f; // ArScale = 0.1
+                cubeCollider.center = Vector3.zero;
+            }
+        }
+
+        private void ApplyMaterials()
+        {
+            if (cubeMeshRenderer == null) return;
+
+            if (useMultiColorFaces && _faceMaterials != null && _faceMaterials.Length == FaceNames.Length)
+            {
+                Material[] materials = _faceMaterials.ToArray();
+                if (_highlightedFace >= 0 && highlightMaterial != null)
+                    materials[_highlightedFace] = highlightMaterial;
+                cubeMeshRenderer.materials = materials;
+                return;
+            }
+
+            if (defaultMaterial != null)
+            {
+                Material[] materials = new Material[FaceNames.Length];
+                for (int i = 0; i < materials.Length; i++)
+                    materials[i] = defaultMaterial;
+                cubeMeshRenderer.materials = materials;
+            }
         }
 
         private void UpdateLabels()

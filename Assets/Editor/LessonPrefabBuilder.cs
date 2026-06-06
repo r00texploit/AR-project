@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using AREducation.Lessons;
 using AREducation.AR;
+using AREducation.Utils;
 
 namespace AREducation.Editor
 {
@@ -14,6 +15,8 @@ namespace AREducation.Editor
         [MenuItem("AR Education/Build Lesson Prefabs")]
         public static void BuildAllPrefabs()
         {
+            ARModelAssetGenerator.GenerateAll();
+
             string prefabPath = "Assets/Prefabs/Lessons";
 
             // Ensure directory exists
@@ -48,8 +51,9 @@ namespace AREducation.Editor
             triangleGO.transform.SetParent(root.transform);
             var meshFilter = triangleGO.AddComponent<MeshFilter>();
             var meshRenderer = triangleGO.AddComponent<MeshRenderer>();
-            meshRenderer.material = new Material(Shader.Find("Standard"));
-            meshRenderer.material.color = new Color(0.3f, 0.6f, 1f);
+            meshFilter.sharedMesh = ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.TriangleMeshPath);
+            meshRenderer.sharedMaterial = ARModelAssetGenerator.LoadMaterial("TriangleLesson")
+                ?? LessonMaterials.CreateTriangleMaterial();
 
             // Create Line Renderer for perimeter
             GameObject outlineGO = new GameObject("PerimeterOutline");
@@ -60,7 +64,7 @@ namespace AREducation.Editor
             lineRenderer.endColor = Color.red;
             lineRenderer.startWidth = 0.05f;
             lineRenderer.endWidth = 0.05f;
-            lineRenderer.useWorldSpace = true;
+            lineRenderer.useWorldSpace = false;
 
             // Assign via reflection or serialize field manually
             var so = new SerializedObject(controller);
@@ -83,22 +87,21 @@ namespace AREducation.Editor
             var controller = root.AddComponent<CubeLessonController>();
 
             // Create Cube Mesh GO
-            GameObject cubeGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cubeGO = new GameObject("CubeMesh");
             cubeGO.name = "CubeMesh";
             cubeGO.transform.SetParent(root.transform);
-            var meshFilter = cubeGO.GetComponent<MeshFilter>();
-            var meshRenderer = cubeGO.GetComponent<MeshRenderer>();
+            var meshFilter = cubeGO.AddComponent<MeshFilter>();
+            var meshRenderer = cubeGO.AddComponent<MeshRenderer>();
+            meshFilter.sharedMesh = ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.CubeMeshPath);
+            var collider = cubeGO.AddComponent<BoxCollider>();
 
             // Create materials
-            var defaultMat = new Material(Shader.Find("Standard"));
-            defaultMat.color = new Color(0.3f, 0.6f, 1f);
-            meshRenderer.material = defaultMat;
+            var defaultMat = ARModelAssetGenerator.LoadMaterial("CubeDefault")
+                ?? LessonMaterials.CreateCubeFaceMaterials()[0];
+            meshRenderer.sharedMaterial = defaultMat;
 
-            var highlightMat = new Material(Shader.Find("Standard"));
-            highlightMat.color = Color.yellow;
-
-            // Get collider
-            var collider = cubeGO.GetComponent<BoxCollider>();
+            var highlightMat = ARModelAssetGenerator.LoadMaterial("CubeHighlight")
+                ?? LessonMaterials.CreateCubeHighlightMaterial();
 
             // Assign via serialized object
             var so = new SerializedObject(controller);
@@ -127,17 +130,20 @@ namespace AREducation.Editor
             ballGO.name = "PhysicsBall";
             ballGO.transform.SetParent(root.transform);
             ballGO.transform.localScale = Vector3.one * 0.1f;
+            ballGO.GetComponent<MeshFilter>().sharedMesh =
+                ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.PhysicsBallMeshPath);
 
             var ballRenderer = ballGO.GetComponent<MeshRenderer>();
-            ballRenderer.material = new Material(Shader.Find("Standard"));
-            ballRenderer.material.color = new Color(1f, 0.3f, 0.3f);
+            ballRenderer.sharedMaterial = ARModelAssetGenerator.LoadMaterial("PhysicsBall")
+                ?? LessonMaterials.CreatePhysicsBallMaterial();
 
             // Remove collider - not needed for visual
             Object.DestroyImmediate(ballGO.GetComponent<Collider>());
 
             // Create Trail Renderer
             var trailRenderer = ballGO.AddComponent<TrailRenderer>();
-            trailRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            trailRenderer.sharedMaterial = ARModelAssetGenerator.LoadMaterial("PhysicsTrail")
+                ?? LessonMaterials.CreatePhysicsTrailMaterial();
             trailRenderer.startColor = new Color(1f, 0.3f, 0.3f, 0.5f);
             trailRenderer.endColor = new Color(1f, 0.3f, 0.3f, 0f);
             trailRenderer.startWidth = 0.05f;

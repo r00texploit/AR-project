@@ -102,7 +102,7 @@ namespace AREducation.Utils
             Vector3[] vertices = new Vector3[24];
             Vector3[] normals  = new Vector3[24];
             Vector2[] uvs      = new Vector2[24];
-            int[]     tris     = new int[36];
+            int[][]   tris     = new int[6][];
 
             // Each face: (normal, [4 corner positions])
             (Vector3 n, Vector3[] c)[] faces =
@@ -120,22 +120,26 @@ namespace AREducation.Utils
             for (int f = 0; f < 6; f++)
             {
                 int vBase = f * 4;
-                int tBase = f * 6;
                 for (int v = 0; v < 4; v++)
                 {
                     vertices[vBase + v] = faces[f].c[v];
                     normals [vBase + v] = faces[f].n;
                     uvs     [vBase + v] = faceUVs[v];
                 }
-                tris[tBase + 0] = vBase + 0; tris[tBase + 1] = vBase + 1; tris[tBase + 2] = vBase + 2;
-                tris[tBase + 3] = vBase + 0; tris[tBase + 4] = vBase + 2; tris[tBase + 5] = vBase + 3;
+                tris[f] = new[]
+                {
+                    vBase + 0, vBase + 1, vBase + 2,
+                    vBase + 0, vBase + 2, vBase + 3,
+                };
             }
 
             Mesh mesh = new Mesh { name = "ProceduralCube" };
             mesh.vertices  = vertices;
-            mesh.triangles = tris;
             mesh.normals   = normals;
             mesh.uv        = uvs;
+            mesh.subMeshCount = 6;
+            for (int f = 0; f < tris.Length; f++)
+                mesh.SetTriangles(tris[f], f);
             mesh.RecalculateBounds();
             return mesh;
         }

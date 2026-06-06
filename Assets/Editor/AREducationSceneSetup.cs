@@ -15,6 +15,7 @@ using AREducation.Quiz;
 using AREducation.Teacher;
 using AREducation.UI;
 using AREducation.Utils;
+using AREducation.Editor;
 
 /// <summary>
 /// Editor utility that builds all four AR Education scenes programmatically.
@@ -42,6 +43,8 @@ public class AREducationSceneSetup : Editor
     [MenuItem("AR Education/Setup All Scenes")]
     public static void SetupAllScenes()
     {
+        ARModelAssetGenerator.GenerateAll();
+
         SetupMainMenuScene();
         SetupARLessonScene();
         SetupQuizScene();
@@ -169,6 +172,8 @@ public class AREducationSceneSetup : Editor
     [MenuItem("AR Education/2 – Setup AR Lesson Scene")]
     public static void SetupARLessonScene()
     {
+        ARModelAssetGenerator.GenerateAll();
+
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
         // ── AR Core Objects ───────────────────────────────────────────
@@ -642,17 +647,18 @@ public class AREducationSceneSetup : Editor
 
         var meshGO = new GameObject("TriangleMesh");
         meshGO.transform.SetParent(root.transform, false);
-        meshGO.AddComponent<MeshFilter>();
+        var meshFilter = meshGO.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.TriangleMeshPath);
         var mr   = meshGO.AddComponent<MeshRenderer>();
-        var mat  = new Material(Shader.Find("Standard"));
-        mat.color = new Color(0.3f, 0.6f, 1f);
-        mr.material = mat;
+        mr.sharedMaterial = ARModelAssetGenerator.LoadMaterial("TriangleLesson")
+            ?? LessonMaterials.CreateTriangleMaterial();
 
         var outlineGO = new GameObject("Outline");
         outlineGO.transform.SetParent(root.transform, false);
         var lr = outlineGO.AddComponent<LineRenderer>();
         lr.startWidth = 0.008f; lr.endWidth = 0.008f;
         lr.loop = false;
+        lr.useWorldSpace = false;
         lr.material = new Material(Shader.Find("Sprites/Default")) { color = Color.white };
         lr.positionCount = 4;
 
@@ -671,12 +677,15 @@ public class AREducationSceneSetup : Editor
         var trackGO  = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         trackGO.name = "Track";
         trackGO.transform.SetParent(root.transform, false);
+        trackGO.GetComponent<MeshFilter>().sharedMesh =
+            ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.PhysicsTrackMeshPath);
         trackGO.transform.localScale = new Vector3(0.02f, 1f, 0.02f);
         trackGO.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
         trackGO.transform.localPosition = new Vector3(0.15f, 0f, 0f);
         DestroyImmediate(trackGO.GetComponent<Collider>());
-        trackGO.GetComponent<MeshRenderer>().material =
-            new Material(Shader.Find("Standard")) { color = new Color(0.4f,0.4f,0.5f) };
+        trackGO.GetComponent<MeshRenderer>().sharedMaterial =
+            ARModelAssetGenerator.LoadMaterial("PhysicsTrack")
+            ?? new Material(Shader.Find("Standard")) { color = new Color(0.4f,0.4f,0.5f) };
 
         // Ball
         var ballGO   = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -684,13 +693,16 @@ public class AREducationSceneSetup : Editor
         ballGO.transform.SetParent(root.transform, false);
         ballGO.transform.localScale    = Vector3.one * 0.06f;
         ballGO.transform.localPosition = Vector3.zero;
-        ballGO.GetComponent<MeshRenderer>().material =
-            new Material(Shader.Find("Standard")) { color = new Color(1f,0.4f,0.1f) };
+        ballGO.GetComponent<MeshFilter>().sharedMesh =
+            ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.PhysicsBallMeshPath);
+        ballGO.GetComponent<MeshRenderer>().sharedMaterial =
+            ARModelAssetGenerator.LoadMaterial("PhysicsBall")
+            ?? LessonMaterials.CreatePhysicsBallMaterial();
 
         var trail = ballGO.AddComponent<TrailRenderer>();
         trail.startWidth = 0.02f; trail.endWidth = 0f; trail.time = 1.5f;
-        trail.material = new Material(Shader.Find("Sprites/Default"))
-            { color = new Color(1f,0.6f,0.2f,0.5f) };
+        trail.sharedMaterial = ARModelAssetGenerator.LoadMaterial("PhysicsTrail")
+            ?? LessonMaterials.CreatePhysicsTrailMaterial();
 
         var ctrl = root.AddComponent<PhysicsLessonController>();
         SetField(ctrl, "ballTransform", ballGO.transform);
@@ -708,9 +720,11 @@ public class AREducationSceneSetup : Editor
 
         var meshGO = new GameObject("CubeMesh");
         meshGO.transform.SetParent(root.transform, false);
-        meshGO.AddComponent<MeshFilter>();
+        var meshFilter = meshGO.AddComponent<MeshFilter>();
+        meshFilter.sharedMesh = ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.CubeMeshPath);
         var mr  = meshGO.AddComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Standard")) { color = new Color(0.3f,0.6f,1f) };
+        mr.sharedMaterial = ARModelAssetGenerator.LoadMaterial("CubeDefault")
+            ?? LessonMaterials.CreateCubeFaceMaterials()[0];
 
         // BoxCollider on root for face tap detection
         var col = root.AddComponent<BoxCollider>();
