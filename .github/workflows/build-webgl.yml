@@ -53,7 +53,6 @@ jobs:
           buildsPath:      builds
           # Only include non-AR scenes for the WebGL build
           customParameters: >
-            -buildTarget WebGL
             -scenes Assets/Scenes/MainMenu.unity,Assets/Scenes/Quiz.unity,Assets/Scenes/TeacherDashboard.unity
 
       # ── 4. Upload WebGL artifact ─────────────────────────────────────────────
