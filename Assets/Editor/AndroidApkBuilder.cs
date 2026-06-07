@@ -92,7 +92,7 @@ namespace AREducation.Editor
             Debug.Log($"[AndroidApkBuilder] APK created successfully: {apkPath}");
         }
 
-        private static void ApplyAndroidSettings()
+        public static void ApplyAndroidSettings()
         {
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
             EditorUserBuildSettings.buildAppBundle = false;
@@ -101,7 +101,7 @@ namespace AREducation.Editor
             PlayerSettings.SetApplicationIdentifier(AndroidNamedBuildTarget, "com.areducation.app");
             PlayerSettings.SetScriptingBackend(AndroidNamedBuildTarget, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
-            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel25;
+            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel29;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;
         }
 
