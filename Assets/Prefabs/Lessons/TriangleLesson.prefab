@@ -100,6 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 296425377150280865}
   - component: {fileID: 3264309106219000260}
+  - component: {fileID: 6734567804009035553}
   m_Layer: 0
   m_Name: TriangleLesson
   m_TagString: Untagged
@@ -135,7 +136,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa000008000000000000000000000001, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AREducation.Lessons.TriangleLessonController
+  m_EditorClassIdentifier: AREducation::AREducation.Lessons.TriangleLessonController
   triangleMeshFilter: {fileID: 3113672172259689602}
   perimeterOutline: {fileID: 367889236974862755}
   triangleMeshRenderer: {fileID: 0}
@@ -152,6 +153,23 @@ MonoBehaviour:
   labelFormula: {fileID: 0}
   labelExplanation: {fileID: 0}
   labelWarning: {fileID: 0}
+--- !u!114 &6734567804009035553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6626404045247638352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa000005000000000000000000000001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AREducation::AREducation.AR.ARObjectManipulator
+  dragSensitivity: 0.003
+  scaleSensitivity: 0.003
+  rotateSensitivity: 0.4
+  minScale: 0.15
+  maxScale: 4
 --- !u!1 &6963983217427184532
 GameObject:
   m_ObjectHideFlags: 0

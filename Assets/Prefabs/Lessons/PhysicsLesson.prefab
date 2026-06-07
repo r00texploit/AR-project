@@ -210,6 +210,96 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!1 &5470653301788260557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7212166929254980610}
+  - component: {fileID: 5853708594849343561}
+  - component: {fileID: 3818310461632985011}
+  m_Layer: 0
+  m_Name: PhysicsTrack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7212166929254980610
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470653301788260557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0.15, y: 0, z: 0}
+  m_LocalScale: {x: 0.02, y: 1, z: 0.02}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2055338676029967217}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &5853708594849343561
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470653301788260557}
+  m_Mesh: {fileID: 4300000, guid: 5d6737f4754d14529b61c007e29dcc5f, type: 2}
+--- !u!23 &3818310461632985011
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470653301788260557}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: fa31d36bc12ca4c58b853c77b264d07d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8283464897220977600
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,6 +310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2055338676029967217}
   - component: {fileID: 718359451842992833}
+  - component: {fileID: 6904723701861832678}
   m_Layer: 0
   m_Name: PhysicsLesson
   m_TagString: Untagged
@@ -240,6 +331,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7212166929254980610}
   - {fileID: 3422089721661624324}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -254,10 +346,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa000009000000000000000000000001, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AREducation.Lessons.PhysicsLessonController
+  m_EditorClassIdentifier: AREducation::AREducation.Lessons.PhysicsLessonController
   ballTransform: {fileID: 3422089721661624324}
   ballTrail: {fileID: 1407782059686273313}
-  ballRenderer: {fileID: 0}
+  ballRenderer: {fileID: 8613951390897369571}
   enableGlow: 1
   enableTrail: 1
   labelSpeed: {fileID: 0}
@@ -269,3 +361,20 @@ MonoBehaviour:
   btnSpeedUp: {fileID: 0}
   btnSlowDown: {fileID: 0}
   btnStartStopLabel: {fileID: 0}
+--- !u!114 &6904723701861832678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8283464897220977600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa000005000000000000000000000001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AREducation::AREducation.AR.ARObjectManipulator
+  dragSensitivity: 0.003
+  scaleSensitivity: 0.003
+  rotateSensitivity: 0.4
+  minScale: 0.15
+  maxScale: 4

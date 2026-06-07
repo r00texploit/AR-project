@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9219469331961100870}
   - component: {fileID: 8507693193063097349}
+  - component: {fileID: 5178063136204187741}
   m_Layer: 0
   m_Name: CubeLesson
   m_TagString: Untagged
@@ -44,7 +45,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa00000a000000000000000000000001, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AREducation.Lessons.CubeLessonController
+  m_EditorClassIdentifier: AREducation::AREducation.Lessons.CubeLessonController
   cubeMeshFilter: {fileID: 1806029976235128632}
   cubeMeshRenderer: {fileID: 9125434649110636143}
   cubeCollider: {fileID: 7077787454496684856}
@@ -55,6 +56,23 @@ MonoBehaviour:
   labelFormula: {fileID: 0}
   labelSize: {fileID: 0}
   sizeSlider: {fileID: 0}
+--- !u!114 &5178063136204187741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3305032160104042227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa000005000000000000000000000001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AREducation::AREducation.AR.ARObjectManipulator
+  dragSensitivity: 0.003
+  scaleSensitivity: 0.003
+  rotateSensitivity: 0.4
+  minScale: 0.15
+  maxScale: 4
 --- !u!1 &5188204378262127400
 GameObject:
   m_ObjectHideFlags: 0

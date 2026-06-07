@@ -45,6 +45,7 @@ namespace AREducation.Editor
 
             // Add TriangleLessonController
             var controller = root.AddComponent<TriangleLessonController>();
+            root.AddComponent<ARObjectManipulator>();
 
             // Create Triangle Mesh GO
             GameObject triangleGO = new GameObject("TriangleMesh");
@@ -85,6 +86,7 @@ namespace AREducation.Editor
 
             // Add CubeLessonController
             var controller = root.AddComponent<CubeLessonController>();
+            root.AddComponent<ARObjectManipulator>();
 
             // Create Cube Mesh GO
             GameObject cubeGO = new GameObject("CubeMesh");
@@ -124,6 +126,21 @@ namespace AREducation.Editor
 
             // Add PhysicsLessonController
             var controller = root.AddComponent<PhysicsLessonController>();
+            root.AddComponent<ARObjectManipulator>();
+
+            // Create Track/Rail visual so the prefab matches the runtime AR scene.
+            GameObject trackGO = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            trackGO.name = "PhysicsTrack";
+            trackGO.transform.SetParent(root.transform, false);
+            trackGO.transform.localScale = new Vector3(0.02f, 1f, 0.02f);
+            trackGO.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            trackGO.transform.localPosition = new Vector3(0.15f, 0f, 0f);
+            trackGO.GetComponent<MeshFilter>().sharedMesh =
+                ARModelAssetGenerator.LoadMesh(ARModelAssetGenerator.PhysicsTrackMeshPath);
+            trackGO.GetComponent<MeshRenderer>().sharedMaterial =
+                ARModelAssetGenerator.LoadMaterial("PhysicsTrack")
+                ?? new Material(Shader.Find("Standard")) { color = new Color(0.4f, 0.4f, 0.5f) };
+            Object.DestroyImmediate(trackGO.GetComponent<Collider>());
 
             // Create Ball
             GameObject ballGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -154,6 +171,7 @@ namespace AREducation.Editor
             var so = new SerializedObject(controller);
             so.FindProperty("ballTransform").objectReferenceValue = ballGO.transform;
             so.FindProperty("ballTrail").objectReferenceValue = trailRenderer;
+            so.FindProperty("ballRenderer").objectReferenceValue = ballRenderer;
             so.ApplyModifiedProperties();
 
             PrefabUtility.SaveAsPrefabAsset(root, path);

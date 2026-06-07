@@ -753,6 +753,7 @@ public class AREducationSceneSetup : Editor
         var ctrl = root.AddComponent<PhysicsLessonController>();
         SetField(ctrl, "ballTransform", ballGO.transform);
         SetField(ctrl, "ballTrail",     trail);
+        SetField(ctrl, "ballRenderer",  ballGO.GetComponent<MeshRenderer>());
 
         root.AddComponent<ARObjectManipulator>();
         root.SetActive(false);
