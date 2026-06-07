@@ -17,8 +17,8 @@ namespace AREducation.Data
                 using AndroidJavaObject activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
                 using AndroidJavaObject file = new AndroidJavaObject("java.io.File", filePath);
                 string packageName = activity.Call<string>("getPackageName");
-                using AndroidJavaClass fileProvider = new AndroidJavaClass("androidx.core.content.FileProvider");
-                using AndroidJavaObject uri = fileProvider.CallStatic<AndroidJavaObject>(
+                using AndroidJavaClass reportShare = new AndroidJavaClass("com.areducation.share.ReportShare");
+                using AndroidJavaObject uri = reportShare.CallStatic<AndroidJavaObject>(
                     "getUriForFile", activity, packageName + ".fileprovider", file);
 
                 using AndroidJavaObject intent = new AndroidJavaObject("android.content.Intent");
