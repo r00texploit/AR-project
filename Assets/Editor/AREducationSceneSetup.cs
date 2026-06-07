@@ -40,6 +40,9 @@ public class AREducationSceneSetup : Editor
             }
             if (_defaultFont == null)
                 _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                    "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset");
+            if (_defaultFont == null)
+                _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
                     "Packages/com.unity.textmeshpro/Resources/Fonts & Materials/LiberationSans SDF.asset");
             if (_defaultFont == null)
                 _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
@@ -997,30 +1000,61 @@ public class AREducationSceneSetup : Editor
         sliderRT.anchoredPosition = new Vector2(60, -15);
         sliderRT.sizeDelta        = new Vector2(350, 30);
 
+        var backgroundGO = new GameObject("Background");
+        backgroundGO.transform.SetParent(sliderGO.transform, false);
+        var backgroundImg = backgroundGO.AddComponent<Image>();
+        backgroundImg.color = new Color(0.12f, 0.16f, 0.24f, 1f);
+        Stretch(backgroundGO.GetComponent<RectTransform>(),
+            new Vector2(0f, 0.25f), new Vector2(1f, 0.75f),
+            Vector2.zero, Vector2.zero);
+
         // Fill area
         var fillAreaGO = new GameObject("Fill Area");
         fillAreaGO.transform.SetParent(sliderGO.transform, false);
-        fillAreaGO.AddComponent<RectTransform>();
+        Stretch(fillAreaGO.AddComponent<RectTransform>(),
+            Vector2.zero, Vector2.one,
+            new Vector2(10f, 8f), new Vector2(-10f, -8f));
+
         var fillGO = new GameObject("Fill");
         fillGO.transform.SetParent(fillAreaGO.transform, false);
         var fillImg = fillGO.AddComponent<Image>();
         fillImg.color = new Color(0.3f, 0.6f, 1f);
-        slider.fillRect = fillGO.GetComponent<RectTransform>();
+        var fillRT = fillGO.GetComponent<RectTransform>();
+        Stretch(fillRT, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+        slider.fillRect = fillRT;
 
         // Handle
         var handleSlideAreaGO = new GameObject("Handle Slide Area");
         handleSlideAreaGO.transform.SetParent(sliderGO.transform, false);
+        Stretch(handleSlideAreaGO.AddComponent<RectTransform>(),
+            Vector2.zero, Vector2.one,
+            new Vector2(10f, 0f), new Vector2(-10f, 0f));
+
         var handleGO = new GameObject("Handle");
         handleGO.transform.SetParent(handleSlideAreaGO.transform, false);
         var handleImg = handleGO.AddComponent<Image>();
         handleImg.color = Color.white;
         var handleRT = handleGO.GetComponent<RectTransform>();
+        handleRT.anchorMin = new Vector2(0.5f, 0.5f);
+        handleRT.anchorMax = new Vector2(0.5f, 0.5f);
+        handleRT.pivot = new Vector2(0.5f, 0.5f);
+        handleRT.anchoredPosition = Vector2.zero;
         handleRT.sizeDelta = new Vector2(25, 25);
         slider.handleRect = handleRT;
 
         slider.targetGraphic = handleImg;
+        slider.direction = Slider.Direction.LeftToRight;
 
         return (sliderGO, lblGO);
+    }
+
+    private static void Stretch(RectTransform rt, Vector2 anchorMin, Vector2 anchorMax,
+        Vector2 offsetMin, Vector2 offsetMax)
+    {
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = offsetMin;
+        rt.offsetMax = offsetMax;
     }
 
     private static GameObject CreateInputField(Transform parent, string name,
