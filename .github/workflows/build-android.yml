@@ -46,21 +46,21 @@ jobs:
         with:
           targetPlatform:        Android
           unityVersion:          6000.4.8f1
-          buildName:             AR-Education-MVP
+          buildName:             AR-Education
           buildsPath:            builds
           androidExportType:     androidPackage   # .apk (not .aab) for sideloading
-          androidKeystoreName:   ""
-          androidKeystoreBase64: ""
-          androidKeystorePass:   ""
-          androidKeyaliasName:   ""
-          androidKeyaliasPass:   ""
+          androidKeystoreName:   release.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass:   ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName:   ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          androidKeyaliasPass:   ${{ secrets.ANDROID_KEYALIAS_PASS }}
 
       # ── 4. Rename APK with version + run number ───────────────────────────────
       - name: Rename APK
         run: |
           mkdir -p dist
           cp builds/Android/*.apk \
-             dist/AR-Education-MVP-v1.0-build${{ github.run_number }}.apk
+             dist/AR-Education-v1.0-build${{ github.run_number }}.apk
 
       # ── 5. Upload APK as downloadable artifact (kept 30 days) ────────────────
       - name: Upload APK artifact

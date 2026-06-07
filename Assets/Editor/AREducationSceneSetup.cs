@@ -30,10 +30,20 @@ public class AREducationSceneSetup : Editor
         get
         {
             if (_defaultFont != null) return _defaultFont;
-            _defaultFont = TMP_Settings.defaultFontAsset;
+            try
+            {
+                _defaultFont = TMP_Settings.defaultFontAsset;
+            }
+            catch
+            {
+                _defaultFont = null;
+            }
             if (_defaultFont == null)
                 _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
                     "Packages/com.unity.textmeshpro/Resources/Fonts & Materials/LiberationSans SDF.asset");
+            if (_defaultFont == null)
+                _defaultFont = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                    "Packages/com.unity.ugui/Runtime/TMP/Resources/Fonts & Materials/LiberationSans SDF.asset");
             return _defaultFont;
         }
     }
@@ -91,7 +101,7 @@ public class AREducationSceneSetup : Editor
             new Color(0.09f, 0.12f, 0.18f), FullRect());
 
         // Title
-        CreateTMPText(canvasGO.transform, "TitleText", "AR Math & Physics",
+        CreateTMPText(canvasGO.transform, "TitleText", "AR Education",
             40, FontStyles.Bold, Color.white,
             new Rect(-300, 200, 600, 80));
 
@@ -108,7 +118,7 @@ public class AREducationSceneSetup : Editor
         // Buttons
         var btnAR      = CreateButton(canvasGO.transform, "BtnStartAR",      "Start AR Lesson",  -30,  new Color(0.2f,0.6f,1f));
         var btnQuiz    = CreateButton(canvasGO.transform, "BtnQuizzes",       "Take a Quiz",      -110, new Color(0.2f,0.8f,0.4f));
-        var btnTeacher = CreateButton(canvasGO.transform, "BtnTeacher",       "Teacher Dashboard",-190, new Color(0.9f,0.5f,0.1f));
+        var btnTeacher = CreateButton(canvasGO.transform, "BtnTeacher",       "Progress & Reports",-190, new Color(0.9f,0.5f,0.1f));
         var btnSettings= CreateButton(canvasGO.transform, "BtnSettings",      "Settings",         -270, new Color(0.5f,0.5f,0.6f));
 
         // Lesson selector panel
@@ -135,10 +145,14 @@ public class AREducationSceneSetup : Editor
         CreateTMPText(settingsPanel.transform, "SettingsTitle", "Settings",
             28, FontStyles.Bold, Color.white, new Rect(-200,120,400,50));
         var nameInputGO = CreateInputField(settingsPanel.transform, "StudentNameInput",
-            "Enter your name...", 40);
-        var arToggleGO  = CreateToggle(settingsPanel.transform, "ARToggle", "Enable AR Mode", -20);
-        var btnSave     = CreateButton(settingsPanel.transform, "BtnSaveSettings", "Save", -110, new Color(0.2f,0.7f,0.3f));
-        var btnCloseSet = CreateButton(settingsPanel.transform, "BtnCloseSettings","✕ Close", -180, new Color(0.5f,0.2f,0.2f));
+            "Student name", 55);
+        var gradeInputGO = CreateInputField(settingsPanel.transform, "GradeInput",
+            "Grade level", -15);
+        var classInputGO = CreateInputField(settingsPanel.transform, "ClassInput",
+            "Class name", -85);
+        var arToggleGO  = CreateToggle(settingsPanel.transform, "ARToggle", "Enable AR Mode", -150);
+        var btnSave     = CreateButton(settingsPanel.transform, "BtnSaveSettings", "Save Profile", -220, new Color(0.2f,0.7f,0.3f));
+        var btnCloseSet = CreateButton(settingsPanel.transform, "BtnCloseSettings","Close", -290, new Color(0.5f,0.2f,0.2f));
         settingsPanel.SetActive(false);
 
         // ── Wire MainMenuController ─────────────────────────────────
@@ -161,6 +175,8 @@ public class AREducationSceneSetup : Editor
         SetField(ctrl, "btnCloseQuizPanel",    btnCQP.GetComponent<Button>());
         SetField(ctrl, "settingsPanel",        settingsPanel);
         SetField(ctrl, "nameInput",            nameInputGO.GetComponent<TMP_InputField>());
+        SetField(ctrl, "gradeInput",           gradeInputGO.GetComponent<TMP_InputField>());
+        SetField(ctrl, "classInput",           classInputGO.GetComponent<TMP_InputField>());
         SetField(ctrl, "arToggle",             arToggleGO.GetComponent<Toggle>());
         SetField(ctrl, "btnSaveSettings",      btnSave.GetComponent<Button>());
         SetField(ctrl, "btnCloseSettings",     btnCloseSet.GetComponent<Button>());
@@ -265,6 +281,9 @@ public class AREducationSceneSetup : Editor
         // Quiz button
         var quizBtn = CreateButton(hudCanvasGO.transform, "BtnStartQuiz",
             "Take Quiz", -800, new Color(0.2f,0.7f,0.3f));
+
+        var resetPlacementBtn = CreateButton(hudCanvasGO.transform, "BtnResetPlacement",
+            "Reset Placement", -880, new Color(0.55f,0.35f,0.15f));
 
         // ── Triangle Control Panel ─────────────────────────────────────
         var triPanel = CreatePanel(hudCanvasGO.transform, "TriangleControlPanel",
@@ -393,6 +412,7 @@ public class AREducationSceneSetup : Editor
         SetField(hudCtrl, "btnSelectPhysics",      swPhyBtn.GetComponent<Button>());
         SetField(hudCtrl, "placementHintPanel",    hintPanel);
         SetField(hudCtrl, "hintText",              hintTxt.GetComponent<TMP_Text>());
+        SetField(hudCtrl, "btnResetPlacement",     resetPlacementBtn.GetComponent<Button>());
         SetField(hudCtrl, "triangleControlPanel",  triPanel);
         SetField(hudCtrl, "physicsControlPanel",   phyPanel);
         SetField(hudCtrl, "cubeControlPanel",      cubePanel);
@@ -492,10 +512,18 @@ public class AREducationSceneSetup : Editor
         var ratingTxt = CreateTMPText(resultPanelGO.transform, "RatingText", "Excellent! 🌟",
             24, FontStyles.Normal, Color.white,
             new Rect(-300, 80, 600, 50));
+        var statusTxt = CreateTMPText(resultPanelGO.transform, "ResultStatusText",
+            "Your result was saved locally on this device.",
+            17, FontStyles.Normal, new Color(0.75f,0.9f,1f),
+            new Rect(-390, 20, 780, 45));
         var retryBtn  = CreateButton(resultPanelGO.transform, "RetryButton", "Retry Quiz",
-            -30, new Color(0.2f,0.6f,1f));
+            -55, new Color(0.2f,0.6f,1f));
+        var progressBtn = CreateButton(resultPanelGO.transform, "ProgressButton", "View Progress",
+            -145, new Color(0.9f,0.5f,0.1f));
+        var exportBtn = CreateButton(resultPanelGO.transform, "ExportReportButton", "Export PDF Report",
+            -235, new Color(0.2f,0.7f,0.3f));
         var menuBtn   = CreateButton(resultPanelGO.transform, "MenuButton", "Main Menu",
-            -120, new Color(0.4f,0.4f,0.5f));
+            -325, new Color(0.4f,0.4f,0.5f));
 
         // Back button
         var backBtn = CreateButton(canvasGO.transform, "BackButton", "< Back",
@@ -525,13 +553,16 @@ public class AREducationSceneSetup : Editor
         SetField(quizUI, "ratingText",        ratingTxt.GetComponent<TMP_Text>());
         SetField(quizUI, "retryButton",       retryBtn.GetComponent<Button>());
         SetField(quizUI, "menuButton",        menuBtn.GetComponent<Button>());
+        SetField(quizUI, "progressButton",    progressBtn.GetComponent<Button>());
+        SetField(quizUI, "exportButton",      exportBtn.GetComponent<Button>());
+        SetField(quizUI, "resultStatusText",  statusTxt.GetComponent<TMP_Text>());
         SetField(quizUI, "backButton",        backBtn.GetComponent<Button>());
 
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/Quiz.unity");
         Debug.Log("[AREducation] Quiz scene saved.");
     }
 
-    [MenuItem("AR Education/4 – Setup Teacher Dashboard Scene")]
+    [MenuItem("AR Education/4 - Setup Progress & Reports Scene")]
     public static void SetupTeacherDashboardScene()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -553,16 +584,23 @@ public class AREducationSceneSetup : Editor
             new Color(0.07f,0.1f,0.16f), FullRect());
 
         // Header
-        CreateTMPText(canvasGO.transform, "Header", "Teacher Dashboard",
+        CreateTMPText(canvasGO.transform, "Header", "Progress & Reports",
             32, FontStyles.Bold, Color.white, new Rect(-400, 840, 800, 60));
+        var profileTxt = CreateTMPText(canvasGO.transform, "ProfileText", "Student | Grade | Class",
+            17, FontStyles.Normal, new Color(0.75f,0.9f,1f),
+            new Rect(-400, 805, 800, 35));
 
         // Summary texts
         var summaryTxt = CreateTMPText(canvasGO.transform, "SummaryText", "0 results shown",
             18, FontStyles.Normal, new Color(0.7f,0.7f,0.7f),
-            new Rect(-400, 780, 500, 35));
+            new Rect(-400, 765, 500, 35));
         var avgTxt = CreateTMPText(canvasGO.transform, "AverageText", "Average Score: 0%",
             18, FontStyles.Normal, new Color(0.9f,0.9f,0.5f),
-            new Rect(-400, 740, 500, 35));
+            new Rect(-400, 725, 500, 35));
+        var statusTxt = CreateTMPText(canvasGO.transform, "StatusText",
+            "Complete a quiz to start building your progress report.",
+            16, FontStyles.Normal, new Color(0.7f,0.85f,1f),
+            new Rect(-420, -835, 840, 45));
 
         // Filter buttons
         var filterPanel = CreatePanel(canvasGO.transform, "FilterPanel",
@@ -575,8 +613,8 @@ public class AREducationSceneSetup : Editor
         // Scroll view for result rows
         var scrollGO    = new GameObject("ScrollView");
         scrollGO.transform.SetParent(canvasGO.transform, false);
-        var scrollRect  = scrollGO.AddComponent<ScrollRect>();
         var scrollRT    = scrollGO.AddComponent<RectTransform>();
+        var scrollRect  = scrollGO.AddComponent<ScrollRect>();
         scrollRT.anchorMin         = new Vector2(0f, 0f);
         scrollRT.anchorMax         = new Vector2(1f, 1f);
         scrollRT.offsetMin         = new Vector2(20, 80);
@@ -619,7 +657,11 @@ public class AREducationSceneSetup : Editor
 
         // Back button
         var backBtn = CreateButton(canvasGO.transform, "BackButton", "< Back",
-            -870, new Color(0.4f,0.2f,0.2f));
+            -875, new Color(0.4f,0.2f,0.2f), width: 260, anchorX: -270);
+        var exportBtn = CreateButton(canvasGO.transform, "ExportButton", "Export PDF",
+            -875, new Color(0.2f,0.65f,0.3f), width: 260, anchorX: 0);
+        var clearBtn = CreateButton(canvasGO.transform, "ClearButton", "Clear Results",
+            -875, new Color(0.55f,0.25f,0.2f), width: 260, anchorX: 270);
 
         // Dashboard controller
         var dctrlGO = new GameObject("TeacherDashboardController");
@@ -632,10 +674,14 @@ public class AREducationSceneSetup : Editor
         SetField(dctrl, "resultRowPrefab",  rowPrefab);
         SetField(dctrl, "summaryText",      summaryTxt.GetComponent<TMP_Text>());
         SetField(dctrl, "averageText",      avgTxt.GetComponent<TMP_Text>());
+        SetField(dctrl, "profileText",      profileTxt.GetComponent<TMP_Text>());
+        SetField(dctrl, "statusText",       statusTxt.GetComponent<TMP_Text>());
         SetField(dctrl, "backButton",       backBtn.GetComponent<Button>());
+        SetField(dctrl, "exportButton",     exportBtn.GetComponent<Button>());
+        SetField(dctrl, "clearButton",      clearBtn.GetComponent<Button>());
 
         EditorSceneManager.SaveScene(scene, "Assets/Scenes/TeacherDashboard.unity");
-        Debug.Log("[AREducation] TeacherDashboard scene saved.");
+        Debug.Log("[AREducation] Progress & Reports scene saved.");
     }
 
     // ─── Lesson 3D Object Builders ──────────────────────────────────────────

@@ -1,6 +1,6 @@
 # Contributing Guide
 
-How to extend the AR Education MVP with new lessons, quiz questions, scenes, and features.
+How to extend AR Education with new lessons, quiz questions, scenes, and production-safe local features.
 
 ---
 

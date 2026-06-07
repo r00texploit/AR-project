@@ -37,6 +37,9 @@ namespace AREducation.Quiz
         [SerializeField] private TMP_Text   ratingText;
         [SerializeField] private Button     retryButton;
         [SerializeField] private Button     menuButton;
+        [SerializeField] private Button     progressButton;
+        [SerializeField] private Button     exportButton;
+        [SerializeField] private TMP_Text   resultStatusText;
 
         [Header("Colors")]
         [SerializeField] private Color correctColor   = new Color(0.2f, 0.8f, 0.2f);
@@ -78,6 +81,12 @@ namespace AREducation.Quiz
                 if (SceneLoader.Instance != null)
                     SceneLoader.Instance.LoadScene(SceneLoader.SceneMainMenu);
             });
+            progressButton?.onClick.AddListener(() =>
+            {
+                if (SceneLoader.Instance != null)
+                    SceneLoader.Instance.LoadScene(SceneLoader.SceneTeacherDashboard);
+            });
+            exportButton?.onClick.AddListener(ExportReport);
 
             backButton?.onClick.AddListener(() =>
             {
@@ -173,6 +182,24 @@ namespace AREducation.Quiz
                                 : pct >= 60f ? "Good job! 👍"
                                 :              "Keep practising! 📚";
             }
+
+            if (resultStatusText != null)
+                resultStatusText.text = "Your result was saved locally on this device.";
+        }
+
+        private void ExportReport()
+        {
+            if (DataManager.Instance == null)
+            {
+                if (resultStatusText != null) resultStatusText.text = "Progress data is not ready yet.";
+                return;
+            }
+
+            bool shared = DataManager.Instance.ShareProgressReport();
+            if (resultStatusText != null)
+                resultStatusText.text = shared
+                    ? "Progress report exported. Choose an app to share it."
+                    : "Report export failed. Try again.";
         }
 
         private void SetFeedbackVisible(bool show)

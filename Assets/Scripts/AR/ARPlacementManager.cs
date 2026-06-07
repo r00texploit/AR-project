@@ -35,6 +35,22 @@ namespace AREducation.AR
 
         public void EnablePlacement(bool enable) => _placementEnabled = enable;
 
+        public void ResetPlacement()
+        {
+            _hasPlaced = false;
+            _placementEnabled = true;
+            if (_pendingObject != null)
+                _pendingObject.SetActive(false);
+
+            if (planeManager != null)
+            {
+                planeManager.enabled = true;
+                foreach (var plane in planeManager.trackables)
+                    plane.gameObject.SetActive(true);
+            }
+            ShowIndicator(false);
+        }
+
         void Update()
         {
             if (!_placementEnabled) return;
@@ -63,8 +79,8 @@ namespace AREducation.AR
             {
                 _hasPlaced = true;
                 HidePlaneVisuals();
-                OnObjectPlaced?.Invoke(_pendingObject, pose);
             }
+            OnObjectPlaced?.Invoke(_pendingObject, pose);
         }
 
         private void HidePlaneVisuals()

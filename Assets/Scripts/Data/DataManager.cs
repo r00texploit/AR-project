@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using AREducation.Data;
 
 namespace AREducation.Data
 {
@@ -10,10 +9,7 @@ namespace AREducation.Data
     {
         public static DataManager Instance { get; private set; }
 
-        private const string ResultsKey = "quiz_results_v1";
-        private const string StudentNameKey = "student_name";
-        private const string AREnabledKey = "ar_enabled";
-
+        private readonly LocalDataStore _store = new LocalDataStore();
         private MockStudentData _mockData;
 
         void Awake()
@@ -26,6 +22,7 @@ namespace AREducation.Data
             Instance = this;
             DontDestroyOnLoad(gameObject);
             LoadMockData();
+            DiagnosticsLogger.Log("Data manager initialized.");
         }
 
         private void LoadMockData()
@@ -43,23 +40,12 @@ namespace AREducation.Data
 
         public void SaveQuizResult(QuizResult result)
         {
-            QuizResultList list = GetResultList();
-            list.results.Add(result);
-            PlayerPrefs.SetString(ResultsKey, JsonUtility.ToJson(list));
-            PlayerPrefs.Save();
+            _store.SaveResult(result);
         }
 
         public List<QuizResult> GetAllResults()
         {
-            var real = GetResultList().results;
-            var mock = _mockData?.quizResults != null
-                ? new List<QuizResult>(_mockData.quizResults)
-                : new List<QuizResult>();
-
-            // Merge: mock first, real results on top
-            var merged = new List<QuizResult>(mock);
-            merged.AddRange(real);
-            return merged;
+            return _store.GetResults().results;
         }
 
         public List<QuizResult> GetResultsForLesson(string lessonId)
@@ -71,48 +57,60 @@ namespace AREducation.Data
 
         public List<StudentProfile> GetStudents()
         {
-            return _mockData?.students != null
-                ? new List<StudentProfile>(_mockData.students)
-                : new List<StudentProfile>();
+            return new List<StudentProfile> { GetStudentProfile() };
         }
 
+        public StudentProfile GetStudentProfile() => _store.GetProfile();
+
+        public void SaveStudentProfile(StudentProfile profile) => _store.SaveProfile(profile);
+
         public string GetStudentName() =>
-            PlayerPrefs.GetString(StudentNameKey, "Student");
+            GetStudentProfile().studentName;
 
         public void SetStudentName(string name)
         {
-            PlayerPrefs.SetString(StudentNameKey, name);
-            PlayerPrefs.Save();
+            StudentProfile profile = GetStudentProfile();
+            profile.studentName = string.IsNullOrWhiteSpace(name) ? "Student" : name.Trim();
+            _store.SaveProfile(profile);
+        }
+
+        public void SetStudentDetails(string name, string gradeLevel, string className)
+        {
+            StudentProfile profile = GetStudentProfile();
+            profile.studentName = string.IsNullOrWhiteSpace(name) ? "Student" : name.Trim();
+            profile.gradeLevel = gradeLevel?.Trim() ?? "";
+            profile.className = className?.Trim() ?? "";
+            _store.SaveProfile(profile);
         }
 
         public bool IsAREnabled() =>
-            PlayerPrefs.GetInt(AREnabledKey, 1) == 1;
+            _store.IsAREnabled();
 
-        public void SetAREnabled(bool enabled)
-        {
-            PlayerPrefs.SetInt(AREnabledKey, enabled ? 1 : 0);
-            PlayerPrefs.Save();
-        }
+        public void SetAREnabled(bool enabled) => _store.SetAREnabled(enabled);
 
         public void ClearAllResults()
         {
-            PlayerPrefs.DeleteKey(ResultsKey);
-            PlayerPrefs.Save();
+            _store.ClearResults();
         }
 
-        private QuizResultList GetResultList()
+        public ReportExport ExportProgressReport()
         {
-            string json = PlayerPrefs.GetString(ResultsKey, "");
-            if (string.IsNullOrEmpty(json))
-                return new QuizResultList();
-            try
-            {
-                return JsonUtility.FromJson<QuizResultList>(json) ?? new QuizResultList();
-            }
-            catch
-            {
-                return new QuizResultList();
-            }
+            ReportExport export = ReportGenerator.ExportPdf(GetStudentProfile(), GetAllResults());
+            DiagnosticsLogger.Log($"Progress report exported: {export.filePath}");
+            return export;
         }
+
+        public bool ShareProgressReport()
+        {
+            ReportExport export = ExportProgressReport();
+            return AndroidShareService.SharePdf(export.filePath, "Share AR Education report");
+        }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void LoadSampleResults()
+        {
+            _store.LoadSampleResults(_mockData?.quizResults);
+        }
+#endif
     }
 }

@@ -20,6 +20,7 @@ namespace AREducation.AR
 
         public UnityEvent OnARReady;
         public UnityEvent OnARNotSupported;
+        public UnityEvent OnCameraPermissionDenied;
 
         void OnEnable()  => ARSession.stateChanged += HandleARStateChanged;
         void OnDisable() => ARSession.stateChanged -= HandleARStateChanged;
@@ -35,8 +36,17 @@ namespace AREducation.AR
             if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
             {
                 Permission.RequestUserPermission(Permission.Camera);
+                float deadline = Time.realtimeSinceStartup + 15f;
                 yield return new WaitUntil(() =>
-                    Permission.HasUserAuthorizedPermission(Permission.Camera));
+                    Permission.HasUserAuthorizedPermission(Permission.Camera) ||
+                    Time.realtimeSinceStartup >= deadline);
+                if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
+                {
+                    arInitializingPanel?.SetActive(false);
+                    arNotSupportedPanel?.SetActive(true);
+                    OnCameraPermissionDenied?.Invoke();
+                    yield break;
+                }
             }
 #endif
 
@@ -48,7 +58,8 @@ namespace AREducation.AR
             }
 
             // Check if AR is supported based on session state
-            if (ARSession.state == ARSessionState.Unsupported)
+            if (ARSession.state == ARSessionState.Unsupported ||
+                ARSession.state == ARSessionState.NeedsInstall)
             {
                 arInitializingPanel?.SetActive(false);
                 arNotSupportedPanel?.SetActive(true);

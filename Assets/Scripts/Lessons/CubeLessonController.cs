@@ -107,6 +107,7 @@ namespace AREducation.Lessons
             Touch touch = Input.GetTouch(0);
             if (touch.phase != TouchPhase.Began) return;
 
+            if (Camera.main == null) return;
             Ray ray = Camera.main.ScreenPointToRay(touch.position);
             if (!Physics.Raycast(ray, out RaycastHit hit)) return;
             if (hit.collider.gameObject != gameObject &&

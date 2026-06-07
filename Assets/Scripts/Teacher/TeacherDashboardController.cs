@@ -27,12 +27,17 @@ namespace AREducation.Teacher
         [Header("Summary")]
         [SerializeField] private TMP_Text summaryText;
         [SerializeField] private TMP_Text averageText;
+        [SerializeField] private TMP_Text profileText;
+        [SerializeField] private TMP_Text statusText;
 
         [Header("Navigation")]
         [SerializeField] private Button backButton;
+        [SerializeField] private Button exportButton;
+        [SerializeField] private Button clearButton;
 
         private List<QuizResult> _allResults = new List<QuizResult>();
         private string _currentFilter = "";
+        private bool _clearConfirmArmed;
 
         void Start()
         {
@@ -43,6 +48,8 @@ namespace AREducation.Teacher
             btnTriangle?.onClick.AddListener(() => ApplyFilter("triangle"));
             btnPhysics?.onClick.AddListener(()  => ApplyFilter("physics"));
             btnCube?.onClick.AddListener(()     => ApplyFilter("cube"));
+            exportButton?.onClick.AddListener(ExportReport);
+            clearButton?.onClick.AddListener(ConfirmOrClearResults);
 
             Refresh();
         }
@@ -54,6 +61,7 @@ namespace AREducation.Teacher
             else
                 _allResults = new List<QuizResult>();
 
+            UpdateProfileText();
             ApplyFilter(_currentFilter);
         }
 
@@ -75,6 +83,8 @@ namespace AREducation.Teacher
                 summaryText.text = $"{filtered.Count} result(s) shown";
             if (averageText != null)
                 averageText.text = $"Average Score: {avg:F1}%";
+            if (statusText != null && filtered.Count == 0)
+                statusText.text = "Complete a quiz to start building your progress report.";
         }
 
         private void PopulateList(List<QuizResult> results)
@@ -101,6 +111,56 @@ namespace AREducation.Teacher
                 ResultRowUI rowUI = row.GetComponent<ResultRowUI>();
                 rowUI?.Setup(result);
             }
+        }
+
+        private void ExportReport()
+        {
+            if (DataManager.Instance == null)
+            {
+                SetStatus("Progress data is not ready yet.");
+                return;
+            }
+
+            if (_allResults.Count == 0)
+            {
+                SetStatus("No quiz results to export yet.");
+                return;
+            }
+
+            bool shared = DataManager.Instance.ShareProgressReport();
+            SetStatus(shared
+                ? "Progress report exported. Choose an app to share it."
+                : "Report export failed. Try again.");
+        }
+
+        private void ConfirmOrClearResults()
+        {
+            if (!_clearConfirmArmed)
+            {
+                _clearConfirmArmed = true;
+                SetStatus("Tap Clear Results again to permanently remove local quiz history.");
+                return;
+            }
+
+            DataManager.Instance?.ClearAllResults();
+            _clearConfirmArmed = false;
+            SetStatus("Local quiz history cleared.");
+            Refresh();
+        }
+
+        private void UpdateProfileText()
+        {
+            if (profileText == null || DataManager.Instance == null) return;
+            StudentProfile profile = DataManager.Instance.GetStudentProfile();
+            string grade = string.IsNullOrWhiteSpace(profile.gradeLevel) ? "Grade not set" : profile.gradeLevel;
+            string className = string.IsNullOrWhiteSpace(profile.className) ? "Class not set" : profile.className;
+            profileText.text = $"{profile.studentName} | {grade} | {className}";
+        }
+
+        private void SetStatus(string message)
+        {
+            if (statusText != null)
+                statusText.text = message;
         }
 
         private void CreateFallbackRow(QuizResult result)

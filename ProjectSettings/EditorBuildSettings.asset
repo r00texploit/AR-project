@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TeacherDashboard.unity
     guid: cc000004000000000000000000000000
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 548387c296bb447c18a57b125679b0cc, type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 4f468e97418bb4c3a91d86fb87089895, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: a355b5474290549a0907d14379462589, type: 2}

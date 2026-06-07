@@ -27,6 +27,7 @@ namespace AREducation.UI
         [Header("Placement")]
         [SerializeField] private GameObject placementHintPanel;
         [SerializeField] private TMP_Text   hintText;
+        [SerializeField] private Button     btnResetPlacement;
 
         [Header("Control Panels")]
         [SerializeField] private GameObject triangleControlPanel;
@@ -56,6 +57,7 @@ namespace AREducation.UI
             btnSelectPhysics?.onClick.AddListener(()  => SwitchLesson(LessonType.Physics));
 
             btnToggleControls?.onClick.AddListener(ToggleControls);
+            btnResetPlacement?.onClick.AddListener(ResetPlacement);
 
             btnStartQuiz?.onClick.AddListener(() =>
             {
@@ -89,6 +91,17 @@ namespace AREducation.UI
             placementHintPanel?.SetActive(true);
             _controlsVisible = false;
             UpdateTitle();
+        }
+
+        private void ResetPlacement()
+        {
+            placementManager?.ResetPlacement();
+            SetActivePanel(null);
+            placementHintPanel?.SetActive(true);
+            if (hintText != null)
+                hintText.text = "Scan a flat surface, then tap to place.";
+            _controlsVisible = false;
+            if (btnToggleLabel != null) btnToggleLabel.text = "Show Controls";
         }
 
         private void OnObjectPlaced(GameObject obj, Pose pose)

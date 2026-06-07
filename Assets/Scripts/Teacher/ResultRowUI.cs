@@ -5,7 +5,7 @@ using AREducation.Data;
 namespace AREducation.Teacher
 {
     /// <summary>
-    /// One row in the Teacher Dashboard result list.
+    /// One row in the Progress & Reports result list.
     /// </summary>
     public class ResultRowUI : MonoBehaviour
     {
@@ -17,9 +17,11 @@ namespace AREducation.Teacher
 
         public void Setup(QuizResult result)
         {
+            if (result == null) return;
             if (nameText   != null) nameText.text   = result.studentName;
-            if (lessonText != null) lessonText.text = char.ToUpper(result.lessonId[0])
-                                                     + result.lessonId[1..];
+            if (lessonText != null) lessonText.text = !string.IsNullOrWhiteSpace(result.lessonId)
+                ? char.ToUpper(result.lessonId[0]) + result.lessonId[1..]
+                : "Lesson";
             if (scoreText  != null) scoreText.text  =
                 $"{result.score}/{result.totalQuestions} ({result.percentage:F0}%)";
             if (dateText   != null) dateText.text   =

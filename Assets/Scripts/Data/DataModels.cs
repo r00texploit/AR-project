@@ -9,6 +9,8 @@ namespace AREducation.Data
         public string studentId;
         public string studentName;
         public string gradeLevel;
+        public string className;
+        public string createdAt;
     }
 
     [Serializable]
@@ -37,6 +39,7 @@ namespace AREducation.Data
     [Serializable]
     public class QuizResult
     {
+        public string attemptId;
         public string studentId;
         public string studentName;
         public string lessonId;
@@ -45,6 +48,8 @@ namespace AREducation.Data
         public int totalQuestions;
         public float percentage;
         public string timestamp;  // ISO 8601
+        public float durationSeconds;
+        public string appVersion;
     }
 
     // Wrapper needed because JsonUtility cannot deserialize root JSON arrays
@@ -67,5 +72,15 @@ namespace AREducation.Data
         public string lessonId;
         public string displayName;
         public string description;
+    }
+
+    [Serializable]
+    public class ReportExport
+    {
+        public string reportId;
+        public string studentId;
+        public string createdAt;
+        public string filePath;
+        public string[] includedLessonIds;
     }
 }

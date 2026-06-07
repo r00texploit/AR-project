@@ -1,24 +1,22 @@
-name: Build WebGL (Quiz + Dashboard)
+name: Build WebGL (Optional)
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-# Allow GitHub Pages deployment
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: webgl-artifact
   cancel-in-progress: true
 
 jobs:
   build-webgl:
     name: Build WebGL
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       # ── 1. Checkout ──────────────────────────────────────────────────────────
@@ -38,7 +36,7 @@ jobs:
             Library-
 
       # ── 3. Build WebGL ────────────────────────────────────────────────────────
-      # Note: AR Foundation scenes are excluded — only Quiz + TeacherDashboard
+      # Note: AR Foundation scenes are excluded — only Quiz + Progress & Reports
       # work in WebGL (no camera/ARCore available in browsers).
       - name: Build WebGL
         uses: game-ci/unity-builder@v4
@@ -62,22 +60,3 @@ jobs:
           name: AR-Education-WebGL-${{ github.run_number }}
           path: builds/WebGL
           retention-days: 14
-
-      # ── 5. Deploy to GitHub Pages ─────────────────────────────────────────────
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: builds/WebGL/AR-Education-WebGL
-
-  deploy-pages:
-    name: Deploy to GitHub Pages
-    needs: build-webgl
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

@@ -1,254 +1,107 @@
 # Setup Guide
 
-Complete installation and configuration instructions for the AR Education MVP.
+Installation, local verification, and Android release setup for **AR Education**.
 
----
+## Prerequisites
 
-## Table of Contents
+| Tool | Version |
+|---|---|
+| Unity Hub | Latest |
+| Unity Editor | **6000.4.8f1** for CI parity |
+| Android Build Support | Installed with SDK, NDK, and OpenJDK modules |
+| Git | Any current version |
 
-1. [Prerequisites](#1-prerequisites)
-2. [Clone the Repository](#2-clone-the-repository)
-3. [Open in Unity Hub](#3-open-in-unity-hub)
-4. [Package Resolution](#4-package-resolution)
-5. [Build Scene Hierarchy](#5-build-scene-hierarchy)
-6. [Configure XR Plugin Management](#6-configure-xr-plugin-management)
-7. [Import TextMeshPro Resources](#7-import-textmeshpro-resources)
-8. [Test in Editor](#8-test-in-editor)
-9. [Android Build](#9-android-build)
-10. [iOS Build](#10-ios-build)
-11. [Troubleshooting](#11-troubleshooting)
+The target platform is Android ARCore. iOS and WebGL are not production release targets in this pass.
 
----
+## Open The Project
 
-## 1. Prerequisites
+1. Clone the repository.
+2. Open Unity Hub.
+3. Add `/Users/halim/AR-project-main` or your cloned project folder.
+4. Open the project with Unity `6000.4.8f1`.
+5. Wait for package import and script compilation to finish.
 
-| Tool | Version | Download |
-|---|---|---|
-| Unity Hub | Latest | https://unity.com/download |
-| Unity Editor | **2022.3 LTS** | Via Unity Hub → Installs |
-| Android Build Support | (module) | Via Unity Hub alongside the Editor |
-| Android SDK / NDK | Bundled | Installed automatically with Android module |
-| Git | Any | https://git-scm.com/downloads |
+## Generate Scenes
 
-### Unity modules to install
+The scene files are generated from the editor setup script so references stay reproducible.
 
-When installing Unity 2022.3 LTS via Unity Hub, check these add-on modules:
-
-- **Android Build Support**
-  - Android SDK & NDK Tools
-  - OpenJDK
-- **iOS Build Support** (optional)
-
----
-
-## 2. Clone the Repository
-
-### Using the setup script (recommended)
-
-**Linux / macOS:**
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/r00texploit/AR-project/claude/ar-education-mvp-CWdbk/setup.sh)
-```
-
-**Windows PowerShell:**
-```powershell
-irm https://raw.githubusercontent.com/r00texploit/AR-project/claude/ar-education-mvp-CWdbk/setup.ps1 | iex
-```
-
-### Manual clone
-
-```bash
-git clone \
-  --branch claude/ar-education-mvp-CWdbk \
-  --single-branch \
-  https://github.com/r00texploit/AR-project.git \
-  AR-Education-MVP
-
-cd AR-Education-MVP
-```
-
----
-
-## 3. Open in Unity Hub
-
-1. Launch **Unity Hub**
-2. Click **Projects** → **Add** → **Add project from disk**
-3. Navigate to the cloned folder and select it
-4. Unity Hub will detect the project — if prompted to select an editor version, choose **2022.3.x LTS**
-5. Click the project name to open it
-
-> **First open takes 3–10 minutes** while Unity compiles scripts and imports packages.
-
----
-
-## 4. Package Resolution
-
-Unity automatically downloads all packages listed in `Packages/manifest.json`:
-
-| Package | Version | Purpose |
-|---|---|---|
-| `com.unity.xr.arfoundation` | 5.1.2 | AR Foundation core |
-| `com.unity.xr.arcore` | 5.1.2 | Android AR backend |
-| `com.unity.xr.arkit` | 5.1.2 | iOS AR backend |
-| `com.unity.xr.management` | 4.4.0 | XR loader management |
-| `com.unity.xr.core-utils` | 2.2.3 | XROrigin component |
-| `com.unity.textmeshpro` | 3.0.6 | Text rendering |
-| `com.unity.nuget.newtonsoft-json` | 3.2.1 | JSON library |
-| `com.unity.inputsystem` | 1.7.0 | New Input System |
-
-No manual package installation is needed. If you see red errors on first open, wait for the package download to complete and Unity will recompile.
-
----
-
-## 5. Build Scene Hierarchy
-
-The scene `.unity` files are minimal skeletons. The Editor script creates the full GameObjects, components, and wired references:
-
-1. In the Unity menu bar click: **AR Education → Setup All Scenes**
-2. Unity will create and save all four scenes:
+1. In Unity, choose `AR Education > Setup All Scenes`.
+2. Confirm these scenes are saved:
    - `Assets/Scenes/MainMenu.unity`
    - `Assets/Scenes/ARLesson.unity`
    - `Assets/Scenes/Quiz.unity`
    - `Assets/Scenes/TeacherDashboard.unity`
-3. A dialog confirms success and shows the next steps
 
-> If the menu item is not visible, check the **Console** window for compilation errors first. Fix any errors before running setup.
+`TeacherDashboard.unity` now hosts the student-facing **Progress & Reports** flow.
 
----
+## Android Configuration
 
-## 6. Configure XR Plugin Management
-
-AR Foundation needs a platform-specific loader enabled:
-
-1. **Edit → Project Settings → XR Plug-in Management**
-2. On the **Android** tab:
-   - Check **ARCore**
-3. On the **iOS** tab (optional):
-   - Check **ARKit**
-4. Close Project Settings
-
-Unity will show a progress bar while configuring the XR subsystem.
-
----
-
-## 7. Import TextMeshPro Resources
-
-If you see placeholder text or pink UI elements:
-
-1. **Window → TextMeshPro → Import TMP Essential Resources**
-2. Click **Import** in the dialog
-
-This only needs to be done once per project.
-
----
-
-## 8. Test in Editor
-
-Some scenes work in the Editor without an AR device:
-
-| Scene | Editor playable? | Notes |
-|---|---|---|
-| `MainMenu.unity` | Yes | Test navigation, settings, student name |
-| `ARLesson.unity` | Partial | AR camera feed requires device; lesson UI works in simulator |
-| `Quiz.unity` | Yes | Full quiz flow — answer questions, see score |
-| `TeacherDashboard.unity` | Yes | Mock student data loads from Resources/ |
-
-**To play a scene:**
-1. `File → Open Scene` → select scene
-2. Press the **Play** button (▶)
-
----
-
-## 9. Android Build
-
-### One-time setup
-
-1. **File → Build Settings**
-2. Select **Android** and click **Switch Platform**
-3. Click **Player Settings** and verify:
+Verify these settings before a release build:
 
 | Setting | Value |
 |---|---|
-| Product Name | AR Education MVP |
-| Bundle Identifier | `com.areducation.mvp` |
-| Minimum API Level | Android 7.0 (API 24) |
+| Product Name | `AR Education` |
+| Package Name | `com.areducation.app` |
+| Minimum API Level | Android 7.0 / API 24 |
+| Target API Level | 34 |
 | Scripting Backend | IL2CPP |
 | Target Architecture | ARM64 |
-| Internet Access | Auto |
+| Orientation | Portrait |
+| Required permissions | Camera |
+| ARCore | Required |
+| Backup | Disabled |
 
-4. Back in Build Settings, click **Add Open Scenes** — or add manually:
-   - `Assets/Scenes/MainMenu.unity` (index 0)
-   - `Assets/Scenes/ARLesson.unity` (index 1)
-   - `Assets/Scenes/Quiz.unity` (index 2)
-   - `Assets/Scenes/TeacherDashboard.unity` (index 3)
+The manifest intentionally does not request `WRITE_EXTERNAL_STORAGE` or `INTERNET`.
 
-### Build and run
+## Build Locally
 
-- **Build** → saves an `.apk` file (sideload manually)
-- **Build and Run** → installs directly to a connected USB-debugging-enabled device
+1. Connect an ARCore-capable Android device with USB debugging enabled.
+2. In Unity, open `File > Build Settings`.
+3. Select Android and click `Switch Platform`.
+4. Add the four scenes listed above in order.
+5. Click `Build` or `Build And Run`.
 
-> The device must support **ARCore**. Check the [supported devices list](https://developers.google.com/ar/devices).
+## GitHub Actions Release Build
 
----
+Android release builds run through `.github/workflows/build-android.yml` using Unity `6000.4.8f1`.
 
-## 10. iOS Build
+Required Unity secrets:
 
-1. **File → Build Settings → iOS → Switch Platform**
-2. **Player Settings:**
-   - Bundle ID: `com.areducation.mvp`
-   - Camera Usage Description: `Required for Augmented Reality lessons`
-   - Target minimum iOS version: `13.0`
-3. **Build** → generates an Xcode project folder
-4. Open the `.xcodeproj` in Xcode
-5. Set your Apple Developer Team under Signing & Capabilities
-6. Connect an iOS device and click **Run**
+- `UNITY_LICENSE`
+- `UNITY_EMAIL`
+- `UNITY_PASSWORD`
 
-> Requires a Mac with Xcode 14+. The device must support ARKit (iPhone 6s or newer).
+Required signing secrets:
 
----
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASS`
+- `ANDROID_KEYALIAS_NAME`
+- `ANDROID_KEYALIAS_PASS`
 
-## 11. Troubleshooting
+The workflow uploads a signed APK named like `AR-Education-v1.0-build123.apk`.
 
-### Compilation errors on first open
+## Tests
 
-**Cause:** Package downloads are still in progress.  
-**Fix:** Wait for the progress bar in the bottom-right to finish, then Unity recompiles.
+Run EditMode tests locally:
 
-### `AR Education` menu not visible
-
-**Cause:** Compilation errors preventing Editor scripts from loading.  
-**Fix:** Open **Window → General → Console** and resolve all red errors first.
-
-### Pink / missing UI text
-
-**Cause:** TextMeshPro Essential Resources not imported.  
-**Fix:** **Window → TextMeshPro → Import TMP Essential Resources**
-
-### "AR is not supported on this device" message at runtime
-
-**Cause:** ARCore not installed or device not supported.  
-**Fix:** Install Google Play Services for AR from the Play Store, or test on a [supported device](https://developers.google.com/ar/devices).
-
-### Scenes appear empty after `Setup All Scenes`
-
-**Cause:** Script compilation error prevented the Editor script from completing.  
-**Fix:** Check the Console for errors, fix them, then re-run **AR Education → Setup All Scenes**.
-
-### Quiz data not loading
-
-**Cause:** JSON files not in a `Resources/` folder or file name mismatch.  
-**Fix:** Confirm these paths exist:
-```
-Assets/Resources/QuizData/triangle_quiz.json
-Assets/Resources/QuizData/physics_quiz.json
-Assets/Resources/QuizData/cube_quiz.json
+```bash
+/Applications/Unity/Hub/Editor/6000.4.8f1/Unity.app/Contents/MacOS/Unity \
+  -batchmode -automated \
+  -projectPath /Users/halim/AR-project-main \
+  -runTests -testPlatform EditMode -runSynchronously \
+  -testResults /tmp/ar_editmode_results.xml \
+  -logFile /tmp/ar_editmode.log
 ```
 
-### Android build fails: "No valid Android SDK found"
+CI also runs `.github/workflows/unity-smoke-tests.yml` for EditMode smoke coverage.
 
-**Fix:** Unity Hub → Installs → your Unity version → three dots (⋮) → Add Modules → Android Build Support + Android SDK & NDK.
+## Manual Android QA
 
-### IL2CPP build fails with "TypeLoadException" at runtime
-
-**Cause:** IL2CPP stripped a serializable class.  
-**Fix:** `Assets/link.xml` already handles this. If you add new model classes, add their namespace to `link.xml`.
+- Fresh install and update student profile.
+- Deny camera permission and confirm the app explains the blocked AR state.
+- Allow camera permission and verify ARCore availability handling.
+- Place, reset/reposition, move, scale, and rotate each lesson object.
+- Complete all quizzes.
+- Export/share a PDF report.
+- Reopen the app and confirm quiz history persists.
+- Clear results and confirm sample data does not reappear.

@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: AREducation
-  productName: AR Education MVP
+  productName: AR Education
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628, a: 1}
@@ -69,7 +69,7 @@ PlayerSettings:
   Force IOS Speakers When Recording: 0
   deferSystemGesturesMode: 0
   hideHomeButton: 0
-  submitAnalytics: 1
+  submitAnalytics: 0
   useAnimatedAutorotation: 1
   keepLoadedShadersAlive: 0
   isWsaHolographicRemotingEnabled: 0
@@ -179,7 +179,7 @@ PlayerSettings:
   AndroidKeyaliasName:
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
-  AndroidIsGame: 1
+  AndroidIsGame: 0
   AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
@@ -281,9 +281,9 @@ PlayerSettings:
   m_ResolutionDialogBanner: {fileID: 0}
   m_VirtualRealitySupportedDevices: []
   applicationIdentifier:
-    Android: com.areducation.mvp
-    iOS: com.areducation.mvp
-    Standalone: com.areducation.mvp
+    Android: com.areducation.app
+    iOS: com.areducation.app
+    Standalone: com.areducation.app
   buildNumber:
     iOS: 0
     tvOS: 0

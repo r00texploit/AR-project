@@ -18,6 +18,7 @@ namespace AREducation.Quiz
         private List<QuizQuestion> _questions = new List<QuizQuestion>();
         private int  _currentIndex;
         private int  _score;
+        private float _startedAt;
 
         // Events consumed by QuizUIController
         public event Action<QuizQuestion, int, int> OnQuestionChanged;  // question, idx, total
@@ -36,6 +37,7 @@ namespace AREducation.Quiz
         {
             _currentIndex = 0;
             _score        = 0;
+            _startedAt    = Time.realtimeSinceStartup;
 
             TextAsset asset = Resources.Load<TextAsset>($"QuizData/{lessonId}_quiz");
             if (asset == null)
@@ -90,14 +92,17 @@ namespace AREducation.Quiz
             if (DataManager.Instance == null) return;
             DataManager.Instance.SaveQuizResult(new QuizResult
             {
-                studentId      = System.Guid.NewGuid().ToString(),
+                attemptId      = System.Guid.NewGuid().ToString("N"),
+                studentId      = DataManager.Instance.GetStudentProfile().studentId,
                 studentName    = DataManager.Instance.GetStudentName(),
                 lessonId       = SelectedLessonId,
                 lessonTitle    = char.ToUpper(SelectedLessonId[0]) + SelectedLessonId[1..] + " Lesson",
                 score          = _score,
                 totalQuestions = _questions.Count,
                 percentage     = _questions.Count > 0 ? (float)_score / _questions.Count * 100f : 0f,
-                timestamp      = DateTime.Now.ToString("o"),
+                timestamp      = DateTime.UtcNow.ToString("o"),
+                durationSeconds = Mathf.Max(0f, Time.realtimeSinceStartup - _startedAt),
+                appVersion     = Application.version,
             });
         }
 

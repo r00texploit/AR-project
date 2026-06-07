@@ -1,6 +1,6 @@
-# GitHub Actions — Required Secrets
+# GitHub Actions - Required Secrets
 
-Both CI workflows require three Unity license secrets to be set in the repository.
+Android release builds require Unity license secrets and Android signing secrets.
 
 ## How to add secrets
 
@@ -8,13 +8,28 @@ GitHub repo → **Settings** → **Secrets and variables** → **Actions** → *
 
 ---
 
-## Required secrets
+## Unity secrets
 
 | Secret name | Value |
 |---|---|
 | `UNITY_LICENSE` | Contents of your Unity `.ulf` license file (see below) |
 | `UNITY_EMAIL` | Email address of your Unity account |
 | `UNITY_PASSWORD` | Password of your Unity account |
+
+## Android signing secrets
+
+| Secret name | Value |
+|---|---|
+| `ANDROID_KEYSTORE_BASE64` | Base64 encoded release keystore file |
+| `ANDROID_KEYSTORE_PASS` | Keystore password |
+| `ANDROID_KEYALIAS_NAME` | Release key alias |
+| `ANDROID_KEYALIAS_PASS` | Release key password |
+
+Encode the keystore on macOS or Linux:
+
+```bash
+base64 -i release.keystore | pbcopy
+```
 
 ---
 
@@ -45,8 +60,9 @@ https://game.ci/docs/github/activation
 
 | Workflow | Trigger | Output |
 |---|---|---|
-| `build-android.yml` | Push to `main`, PRs, manual | `.apk` artifact (14-day retention) |
-| `build-webgl.yml` | Push to `main`, manual | WebGL artifact + GitHub Pages deploy |
+| `build-android.yml` | Push to `main`, PRs, manual | Signed APK artifact |
+| `unity-smoke-tests.yml` | Push to `main`, PRs, manual | Unity EditMode test results |
+| `build-webgl.yml` | Push to `main`, manual | Optional non-blocking WebGL artifact |
 
 ## Estimated build times
 

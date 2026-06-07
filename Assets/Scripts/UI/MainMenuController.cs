@@ -39,6 +39,8 @@ namespace AREducation.UI
         [Header("Settings Panel")]
         [SerializeField] private GameObject   settingsPanel;
         [SerializeField] private TMP_InputField nameInput;
+        [SerializeField] private TMP_InputField gradeInput;
+        [SerializeField] private TMP_InputField classInput;
         [SerializeField] private Toggle        arToggle;
         [SerializeField] private Button        btnSaveSettings;
         [SerializeField] private Button        btnCloseSettings;
@@ -100,7 +102,12 @@ namespace AREducation.UI
         {
             settingsPanel?.SetActive(true);
             if (nameInput != null && DataManager.Instance != null)
-                nameInput.text = DataManager.Instance.GetStudentName();
+            {
+                var profile = DataManager.Instance.GetStudentProfile();
+                nameInput.text = profile.studentName;
+                if (gradeInput != null) gradeInput.text = profile.gradeLevel;
+                if (classInput != null) classInput.text = profile.className;
+            }
             if (arToggle   != null && DataManager.Instance != null)
                 arToggle.isOn = DataManager.Instance.IsAREnabled();
         }
@@ -110,7 +117,10 @@ namespace AREducation.UI
             if (DataManager.Instance != null)
             {
                 if (nameInput != null)
-                    DataManager.Instance.SetStudentName(nameInput.text);
+                    DataManager.Instance.SetStudentDetails(
+                        nameInput.text,
+                        gradeInput != null ? gradeInput.text : "",
+                        classInput != null ? classInput.text : "");
                 if (arToggle != null)
                     DataManager.Instance.SetAREnabled(arToggle.isOn);
             }
