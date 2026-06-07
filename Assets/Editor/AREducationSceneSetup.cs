@@ -53,6 +53,11 @@ public class AREducationSceneSetup : Editor
     [MenuItem("AR Education/Setup All Scenes")]
     public static void SetupAllScenes()
     {
+        SetupAllScenes(true);
+    }
+
+    public static void SetupAllScenes(bool showDialog)
+    {
         ARModelAssetGenerator.GenerateAll();
 
         SetupMainMenuScene();
@@ -61,7 +66,7 @@ public class AREducationSceneSetup : Editor
         SetupTeacherDashboardScene();
         SetupBuildSettings();
 
-        if (!Application.isBatchMode)
+        if (showDialog && !Application.isBatchMode)
         {
             EditorUtility.DisplayDialog("AR Education Setup Complete",
                 "All four scenes have been created and saved.\n\n" +

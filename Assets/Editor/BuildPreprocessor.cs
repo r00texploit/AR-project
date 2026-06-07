@@ -15,7 +15,7 @@ namespace AREducation.Editor
         public void OnPreprocessBuild(BuildReport report)
         {
             Debug.Log("[BuildPreprocessor] Setting up AR Education scenes...");
-            AREducationSceneSetup.SetupAllScenes();
+            AREducationSceneSetup.SetupAllScenes(false);
             Debug.Log("[BuildPreprocessor] Scene setup complete.");
         }
     }

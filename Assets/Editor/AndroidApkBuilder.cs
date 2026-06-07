@@ -32,6 +32,29 @@ namespace AREducation.Editor
             Build(apkPath);
         }
 
+        [MenuItem("AR Education/Build Android APK to Desktop")]
+        public static void BuildToDesktopFromMenu()
+        {
+            string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            if (string.IsNullOrWhiteSpace(desktop))
+                desktop = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Desktop");
+
+            string outputDir = Path.Combine(desktop, "AR-Education-Builds");
+            string apkPath = Path.Combine(outputDir, "AR-Education.apk");
+
+            try
+            {
+                Build(apkPath);
+                EditorUtility.DisplayDialog("AR Education APK Built", $"APK created:\n{apkPath}", "OK");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                EditorUtility.DisplayDialog("AR Education APK Build Failed", ex.Message, "OK");
+                throw;
+            }
+        }
+
         public static void Build(string apkPath)
         {
             if (string.IsNullOrWhiteSpace(apkPath))
@@ -40,11 +63,12 @@ namespace AREducation.Editor
             apkPath = Path.GetFullPath(apkPath);
             Directory.CreateDirectory(Path.GetDirectoryName(apkPath) ?? ".");
 
+            ValidateAndroidBuildSupport();
             ValidateScenes();
             ApplyAndroidSettings();
 
             Debug.Log("[AndroidApkBuilder] Setting up generated scenes and model assets...");
-            AREducationSceneSetup.SetupAllScenes();
+            AREducationSceneSetup.SetupAllScenes(false);
 
             BuildPlayerOptions options = new BuildPlayerOptions
             {
@@ -79,6 +103,16 @@ namespace AREducation.Editor
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel25;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;
+        }
+
+        private static void ValidateAndroidBuildSupport()
+        {
+            if (BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android, BuildTarget.Android))
+                return;
+
+            throw new InvalidOperationException(
+                "Android Build Support is not installed for this Unity editor. " +
+                "Open Unity Hub > Installs > Unity 6000.4.10f1 > Add modules, then install Android Build Support, Android SDK & NDK Tools, and OpenJDK.");
         }
 
         private static void ValidateScenes()
