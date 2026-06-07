@@ -317,7 +317,7 @@ PlayerSettings:
   uIStatusBarHidden: 1
   uIExitOnSuspend: 0
   uIStatusBarStyle: 0
-  activeInputHandler: 2
+  activeInputHandler: 0
   windowsGamepadBackButtonAction: 0
   cloudProjectId:
   framebufferDepthMemorylessMode: 0
