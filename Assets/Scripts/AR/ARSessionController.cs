@@ -112,7 +112,7 @@ namespace AREducation.AR
                 yield break;
             }
 
-            arInitializingPanel?.SetActive(ARSession.state != ARSessionState.SessionTracking);
+            arInitializingPanel?.SetActive(false);
             DiagnosticsLogger.Log($"AR lesson ready. State: {ARSession.state}");
             OnARReady?.Invoke();
         }
@@ -182,8 +182,6 @@ namespace AREducation.AR
             switch (args.state)
             {
                 case ARSessionState.SessionInitializing:
-                    arInitializingPanel?.SetActive(true);
-                    break;
                 case ARSessionState.SessionTracking:
                     arInitializingPanel?.SetActive(false);
                     break;
