@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "questionId": "pe_01",
+      "lessonId": "pendulum",
+      "questionText": "What is the formula for the period of a simple pendulum?",
+      "options": ["T = 2π√(g/L)", "T = 2π√(L/g)", "T = πL/g", "T = 2πLg"],
+      "correctIndex": 1,
+      "explanation": "The period T = 2π√(L/g), where L is the string length and g is gravitational acceleration."
+    },
+    {
+      "questionId": "pe_02",
+      "lessonId": "pendulum",
+      "questionText": "If the string length doubles, what happens to the period?",
+      "options": ["It doubles", "It halves", "It increases by √2", "It stays the same"],
+      "correctIndex": 2,
+      "explanation": "T ∝ √L, so doubling L multiplies the period by √2 ≈ 1.41."
+    },
+    {
+      "questionId": "pe_03",
+      "lessonId": "pendulum",
+      "questionText": "On the Moon (g ≈ 1.6 m/s²) compared to Earth (g ≈ 9.8 m/s²), the pendulum period is:",
+      "options": ["Shorter", "Longer", "The same", "Zero"],
+      "correctIndex": 1,
+      "explanation": "T = 2π√(L/g). Lower g means a longer period. The Moon pendulum swings more slowly."
+    },
+    {
+      "questionId": "pe_04",
+      "lessonId": "pendulum",
+      "questionText": "Which force drives the oscillation of a simple pendulum?",
+      "options": ["Magnetic force", "Friction", "Gravity component along the arc", "Tension in the string"],
+      "correctIndex": 2,
+      "explanation": "The restoring force is the component of gravity tangential to the pendulum's arc: F = -mg sinθ."
+    },
+    {
+      "questionId": "pe_05",
+      "lessonId": "pendulum",
+      "questionText": "The small-angle approximation (sinθ ≈ θ) is valid when the initial angle is:",
+      "options": ["Greater than 90°", "About 45°", "Less than ~15°", "Exactly 30°"],
+      "correctIndex": 2,
+      "explanation": "For angles less than ~15°, sinθ ≈ θ (in radians), making the SHM approximation accurate."
+    }
+  ]
+}

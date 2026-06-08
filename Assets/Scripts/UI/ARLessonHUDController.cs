@@ -12,6 +12,7 @@ namespace AREducation.UI
     /// <summary>
     /// Controls the HUD overlay during an AR lesson:
     /// placement hint, lesson controls panel, lesson switcher, back button.
+    /// Supports Triangle, Cube, Physics (Pendulum), and Unit Circle lessons.
     /// </summary>
     public class ARLessonHUDController : MonoBehaviour
     {
@@ -23,6 +24,7 @@ namespace AREducation.UI
         [SerializeField] private Button btnSelectTriangle;
         [SerializeField] private Button btnSelectCube;
         [SerializeField] private Button btnSelectPhysics;
+        [SerializeField] private Button btnSelectUnitCircle; // optional — wired in scene
 
         [Header("Placement")]
         [SerializeField] private GameObject placementHintPanel;
@@ -33,12 +35,14 @@ namespace AREducation.UI
         [SerializeField] private GameObject triangleControlPanel;
         [SerializeField] private GameObject physicsControlPanel;
         [SerializeField] private GameObject cubeControlPanel;
+        // Unit Circle uses a world-space canvas created by UnitCircleLessonController;
+        // no overlay panel needed.
 
         [Header("Quiz Button")]
         [SerializeField] private Button btnStartQuiz;
 
         [Header("Toggle")]
-        [SerializeField] private Button  btnToggleControls;
+        [SerializeField] private Button   btnToggleControls;
         [SerializeField] private TMP_Text btnToggleLabel;
 
         [Header("Dependencies")]
@@ -52,9 +56,10 @@ namespace AREducation.UI
             backButton?.onClick.AddListener(() =>
                 SceneLoader.Instance?.LoadScene(SceneLoader.SceneMainMenu));
 
-            btnSelectTriangle?.onClick.AddListener(() => SwitchLesson(LessonType.Triangle));
-            btnSelectCube?.onClick.AddListener(()     => SwitchLesson(LessonType.Cube));
-            btnSelectPhysics?.onClick.AddListener(()  => SwitchLesson(LessonType.Physics));
+            btnSelectTriangle?.onClick.AddListener(()   => SwitchLesson(LessonType.Triangle));
+            btnSelectCube?.onClick.AddListener(()       => SwitchLesson(LessonType.Cube));
+            btnSelectPhysics?.onClick.AddListener(()    => SwitchLesson(LessonType.Physics));
+            btnSelectUnitCircle?.onClick.AddListener(() => SwitchLesson(LessonType.UnitCircle));
 
             btnToggleControls?.onClick.AddListener(ToggleControls);
             btnResetPlacement?.onClick.AddListener(ResetPlacement);
@@ -63,10 +68,11 @@ namespace AREducation.UI
             {
                 QuizManager.SelectedLessonId = LessonManager.SelectedLesson switch
                 {
-                    LessonType.Triangle => "triangle",
-                    LessonType.Cube     => "cube",
-                    LessonType.Physics  => "physics",
-                    _                   => "triangle",
+                    LessonType.Triangle   => "triangle",
+                    LessonType.Cube       => "cube",
+                    LessonType.Physics    => "pendulum",
+                    LessonType.UnitCircle => "unit_circle",
+                    _                     => "triangle",
                 };
                 SceneLoader.Instance?.LoadScene(SceneLoader.SceneQuiz);
             });
@@ -74,7 +80,6 @@ namespace AREducation.UI
             if (placementManager != null)
                 placementManager.OnObjectPlaced.AddListener(OnObjectPlaced);
 
-            // Initial state
             SetActivePanel(null);
             placementHintPanel?.SetActive(true);
             if (hintText != null)
@@ -104,10 +109,7 @@ namespace AREducation.UI
             if (btnToggleLabel != null) btnToggleLabel.text = "Show Controls";
         }
 
-        private void OnObjectPlaced(GameObject obj, Pose pose)
-        {
-            OnObjectPlacedSimple();
-        }
+        private void OnObjectPlaced(GameObject obj, Pose pose) => OnObjectPlacedSimple();
 
         public void OnObjectPlacedSimple()
         {
@@ -135,10 +137,11 @@ namespace AREducation.UI
         {
             SetActivePanel(LessonManager.SelectedLesson switch
             {
-                LessonType.Triangle => triangleControlPanel,
-                LessonType.Cube     => cubeControlPanel,
-                LessonType.Physics  => physicsControlPanel,
-                _                   => null,
+                LessonType.Triangle   => triangleControlPanel,
+                LessonType.Cube       => cubeControlPanel,
+                LessonType.Physics    => physicsControlPanel,
+                LessonType.UnitCircle => null, // uses world-space canvas
+                _                     => null,
             });
         }
 
@@ -154,10 +157,11 @@ namespace AREducation.UI
             if (lessonTitleText == null) return;
             lessonTitleText.text = LessonManager.SelectedLesson switch
             {
-                LessonType.Triangle => "Triangle Lesson",
-                LessonType.Cube     => "Cube Lesson",
-                LessonType.Physics  => "Physics Lesson",
-                _                   => "AR Lesson",
+                LessonType.Triangle   => "Triangle Lesson",
+                LessonType.Cube       => "Cube Lesson",
+                LessonType.Physics    => "Pendulum Lesson",
+                LessonType.UnitCircle => "Unit Circle",
+                _                     => "AR Lesson",
             };
         }
 

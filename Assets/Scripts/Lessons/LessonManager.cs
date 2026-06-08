@@ -3,7 +3,7 @@ using AREducation.AR;
 
 namespace AREducation.Lessons
 {
-    public enum LessonType { Triangle, Cube, Physics }
+    public enum LessonType { Triangle, Cube, Physics, UnitCircle }
 
     /// <summary>
     /// Central orchestrator for the AR lesson scene.
@@ -15,9 +15,10 @@ namespace AREducation.Lessons
         public static LessonType SelectedLesson = LessonType.Triangle;
 
         [Header("Lesson Objects (pre-created, initially inactive)")]
-        [SerializeField] private TriangleLessonController triangleLesson;
-        [SerializeField] private CubeLessonController     cubeLesson;
-        [SerializeField] private PhysicsLessonController  physicsLesson;
+        [SerializeField] private TriangleLessonController   triangleLesson;
+        [SerializeField] private CubeLessonController       cubeLesson;
+        [SerializeField] private PhysicsLessonController    physicsLesson;
+        [SerializeField] private UnitCircleLessonController unitCircleLesson;
 
         [Header("AR Components")]
         [SerializeField] private ARPlacementManager placementManager;
@@ -35,10 +36,11 @@ namespace AREducation.Lessons
             HideAll();
             _currentLesson = type switch
             {
-                LessonType.Triangle => triangleLesson,
-                LessonType.Cube     => cubeLesson,
-                LessonType.Physics  => physicsLesson,
-                _                   => triangleLesson,
+                LessonType.Triangle   => triangleLesson,
+                LessonType.Cube       => cubeLesson,
+                LessonType.Physics    => physicsLesson,
+                LessonType.UnitCircle => unitCircleLesson,
+                _                     => triangleLesson,
             };
 
             if (_currentLesson == null)
@@ -49,7 +51,6 @@ namespace AREducation.Lessons
 
             _currentLesson.Initialize();
 
-            // Hand the lesson object to the placement manager
             if (placementManager != null)
                 placementManager.SetPendingObject(_currentLesson.gameObject);
         }
@@ -59,6 +60,7 @@ namespace AREducation.Lessons
             triangleLesson?.Hide();
             cubeLesson?.Hide();
             physicsLesson?.Hide();
+            unitCircleLesson?.Hide();
         }
 
         public LessonBase GetCurrentLesson() => _currentLesson;
