@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using AREducation.AI;
 using AREducation.Data;
 
 namespace AREducation.Quiz
@@ -21,9 +22,10 @@ namespace AREducation.Quiz
         private float _startedAt;
 
         // Events consumed by QuizUIController
-        public event Action<QuizQuestion, int, int> OnQuestionChanged;  // question, idx, total
-        public event Action<bool, string, int>       OnAnswerChecked;    // correct, explanation, currentScore
-        public event Action<int, int>                OnQuizComplete;     // finalScore, total
+        public event Action<QuizQuestion, int, int>   OnQuestionChanged;   // question, idx, total
+        public event Action<bool, string, int>         OnAnswerChecked;     // correct, explanation, currentScore
+        public event Action<int, int>                  OnQuizComplete;      // finalScore, total
+        public event Action<AIRecommendation, string>  OnRecommendationReady; // rec, feedbackMsg
 
         void Awake()
         {
@@ -83,27 +85,37 @@ namespace AREducation.Quiz
 
         private void FinishQuiz()
         {
-            SaveResult();
+            QuizResult result = BuildResult();
+            DataManager.Instance?.SaveQuizResult(result);
             OnQuizComplete?.Invoke(_score, _questions.Count);
+
+            // AI recommendation
+            AIRecommendation rec = AIRecommendationEngine.Analyze(result);
+            DataManager.Instance?.SaveAIRecommendation(rec);
+            string feedback = AIRecommendationEngine.GetFeedbackMessage(result);
+            OnRecommendationReady?.Invoke(rec, feedback);
         }
 
-        private void SaveResult()
+        private QuizResult BuildResult()
         {
-            if (DataManager.Instance == null) return;
-            DataManager.Instance.SaveQuizResult(new QuizResult
+            string lessonTitle = SelectedLessonId.Length > 0
+                ? char.ToUpper(SelectedLessonId[0]) + SelectedLessonId[1..].Replace('_', ' ') + " Lesson"
+                : SelectedLessonId;
+
+            return new QuizResult
             {
-                attemptId      = System.Guid.NewGuid().ToString("N"),
-                studentId      = DataManager.Instance.GetStudentProfile().studentId,
-                studentName    = DataManager.Instance.GetStudentName(),
-                lessonId       = SelectedLessonId,
-                lessonTitle    = char.ToUpper(SelectedLessonId[0]) + SelectedLessonId[1..] + " Lesson",
-                score          = _score,
-                totalQuestions = _questions.Count,
-                percentage     = _questions.Count > 0 ? (float)_score / _questions.Count * 100f : 0f,
-                timestamp      = DateTime.UtcNow.ToString("o"),
+                attemptId       = Guid.NewGuid().ToString("N"),
+                studentId       = DataManager.Instance?.GetStudentProfile().studentId ?? "",
+                studentName     = DataManager.Instance?.GetStudentName() ?? "Student",
+                lessonId        = SelectedLessonId,
+                lessonTitle     = lessonTitle,
+                score           = _score,
+                totalQuestions  = _questions.Count,
+                percentage      = _questions.Count > 0 ? (float)_score / _questions.Count * 100f : 0f,
+                timestamp       = DateTime.UtcNow.ToString("o"),
                 durationSeconds = Mathf.Max(0f, Time.realtimeSinceStartup - _startedAt),
-                appVersion     = Application.version,
-            });
+                appVersion      = Application.version,
+            };
         }
 
         private void Shuffle()

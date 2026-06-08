@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AREducation.AI;
 using UnityEngine;
 
 namespace AREducation.Data
@@ -21,6 +22,14 @@ namespace AREducation.Data
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // Spin up Firebase service alongside DataManager
+            if (FirebaseRestService.Instance == null)
+            {
+                var fbGO = new GameObject("FirebaseRestService");
+                fbGO.AddComponent<FirebaseRestService>();
+            }
+
             LoadMockData();
             DiagnosticsLogger.Log("Data manager initialized.");
         }
@@ -41,6 +50,28 @@ namespace AREducation.Data
         public void SaveQuizResult(QuizResult result)
         {
             _store.SaveResult(result);
+            FirebaseRestService.Instance?.SaveQuizResult(result);
+
+            // Award XP and persist
+            int xpEarned = AIRecommendationEngine.CalculateXP(result);
+            AwardXP(xpEarned);
+        }
+
+        public void SaveAIRecommendation(AIRecommendation rec)
+        {
+            // Store locally (lightweight: just log it)
+            DiagnosticsLogger.Log($"[AI Rec] User={rec.userId} Weak=[{string.Join(",", rec.weakTopics ?? Array.Empty<string>())}]");
+            FirebaseRestService.Instance?.SaveRecommendation(rec);
+        }
+
+        public void AwardXP(int amount)
+        {
+            StudentProfile p = GetStudentProfile();
+            p.xp    += amount;
+            p.level  = AIRecommendationEngine.CalculateLevel(p.xp);
+            _store.SaveProfile(p);
+            FirebaseRestService.Instance?.UpsertStudentProfile(p);
+            DiagnosticsLogger.Log($"[XP] +{amount} → total {p.xp} (Level {p.level})");
         }
 
         public List<QuizResult> GetAllResults()

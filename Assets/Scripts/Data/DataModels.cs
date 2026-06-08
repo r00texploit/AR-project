@@ -4,6 +4,16 @@ using System.Collections.Generic;
 namespace AREducation.Data
 {
     [Serializable]
+    public class AIRecommendation
+    {
+        public string recommendationId;
+        public string userId;
+        public string[] weakTopics;
+        public string[] suggestedLessons;
+        public string date;
+    }
+
+    [Serializable]
     public class StudentProfile
     {
         public string studentId;
@@ -11,6 +21,10 @@ namespace AREducation.Data
         public string gradeLevel;
         public string className;
         public string createdAt;
+        // Firebase / XP fields (added for graduation project)
+        public int    xp               = 0;
+        public int    level            = 1;
+        public string registrationDate = "";
     }
 
     [Serializable]

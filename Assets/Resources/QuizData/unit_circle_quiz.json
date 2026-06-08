@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "questionId": "uc_01",
+      "lessonId": "unit_circle",
+      "questionText": "What is sin(90°)?",
+      "options": ["0", "1", "-1", "0.5"],
+      "correctIndex": 1,
+      "explanation": "At 90° on the unit circle, the point is at the top (0,1). Sin is the y-coordinate, so sin(90°) = 1."
+    },
+    {
+      "questionId": "uc_02",
+      "lessonId": "unit_circle",
+      "questionText": "What is cos(0°)?",
+      "options": ["0", "-1", "1", "0.5"],
+      "correctIndex": 2,
+      "explanation": "At 0°, the point is at (1,0). Cos is the x-coordinate, so cos(0°) = 1."
+    },
+    {
+      "questionId": "uc_03",
+      "lessonId": "unit_circle",
+      "questionText": "What is the radius of the unit circle?",
+      "options": ["2", "π", "0.5", "1"],
+      "correctIndex": 3,
+      "explanation": "The unit circle has radius = 1 by definition."
+    },
+    {
+      "questionId": "uc_04",
+      "lessonId": "unit_circle",
+      "questionText": "Which identity is always true on the unit circle?",
+      "options": ["sin²θ + cos²θ = 2", "sin²θ - cos²θ = 1", "sin²θ + cos²θ = 1", "sinθ × cosθ = 1"],
+      "correctIndex": 2,
+      "explanation": "The Pythagorean identity: sin²θ + cos²θ = 1 holds for all angles on the unit circle."
+    },
+    {
+      "questionId": "uc_05",
+      "lessonId": "unit_circle",
+      "questionText": "What is sin(180°)?",
+      "options": ["1", "-1", "0", "0.5"],
+      "correctIndex": 2,
+      "explanation": "At 180°, the point is at (-1, 0). Sin is the y-coordinate, so sin(180°) = 0."
+    }
+  ]
+}
