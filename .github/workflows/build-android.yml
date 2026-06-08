@@ -13,13 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Checkout ────────────────────────────────────────────────────────────────
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ── 2. Cache Unity Library folder ──────────────────────────────────────────
+      # ── 2. Cache Unity Library folder ────────────────────────────────────────
       #  Speeds up repeat builds from ~35 min → ~12 min
       - name: Cache Unity Library
         uses: actions/cache@v4
@@ -35,7 +35,7 @@ jobs:
       # - name: Clear Library Cache
       #   run: rm -rf Library
 
-      # ── 4. Detect release signing secrets ─────────────────────────────────────────
+      # ── 4. Detect release signing secrets ────────────────────────────────────
       - name: Detect Android signing secrets
         id: signing
         env:
@@ -44,9 +44,9 @@ jobs:
           ANDROID_KEYALIAS_NAME:   ${{ secrets.ANDROID_KEYALIAS_NAME }}
           ANDROID_KEYALIAS_PASS:   ${{ secrets.ANDROID_KEYALIAS_PASS }}
         run: |
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && \\
-             [ -n "$ANDROID_KEYSTORE_PASS" ] && \\
-             [ -n "$ANDROID_KEYALIAS_NAME" ] && \\
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && \
+             [ -n "$ANDROID_KEYSTORE_PASS" ] && \
+             [ -n "$ANDROID_KEYALIAS_NAME" ] && \
              [ -n "$ANDROID_KEYALIAS_PASS" ]; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
             echo "Release signing secrets detected."
@@ -55,7 +55,7 @@ jobs:
             echo "Release signing secrets are incomplete; building an unsigned CI APK."
           fi
 
-      # ── 5. Build APK with GameCI ──────────────────────────────────────────────────
+      # ── 5. Build APK with GameCI ──────────────────────────────────────────────
       # Pin to a UnityCI image that exists on Docker Hub.
       - name: Build signed Android APK
         if: steps.signing.outputs.enabled == 'true'
@@ -90,14 +90,19 @@ jobs:
           buildsPath:            builds
           androidExportType:     androidPackage   # .apk (not .aab) for sideloading
 
-      # ── 6. Rename APK with version + run number ────────────────────────────────────────
+      # ── 6. Rename APK with version + run number ───────────────────────────────
       - name: Rename APK
         run: |
           mkdir -p dist
-          cp builds/Android/*.apk \\
-             dist/AR-Education-v1.0-build${{ github.run_number }}.apk
+          APK=$(find builds -name "*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "ERROR: No APK found. Contents of builds/:"; find builds -type f 2>/dev/null || ls -la
+            exit 1
+          fi
+          cp "$APK" "dist/AR-Education-v1.0-build${{ github.run_number }}.apk"
+          echo "Copied $APK to dist/AR-Education-v1.0-build${{ github.run_number }}.apk"
 
-      # ── 7. Upload APK as downloadable artifact (kept 30 days) ────────────────────
+      # ── 7. Upload APK as downloadable artifact (kept 30 days) ────────────────
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -106,7 +111,7 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-      # ── 8. Print download instructions in the job summary ───────────────────────
+      # ── 8. Print download instructions in the job summary ────────────────────
       - name: Write job summary
         run: |
           echo "## ✅ Android APK Ready" >> $GITHUB_STEP_SUMMARY
