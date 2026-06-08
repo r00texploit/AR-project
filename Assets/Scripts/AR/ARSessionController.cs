@@ -105,10 +105,13 @@ namespace AREducation.AR
                       ARSession.state == ARSessionState.SessionTracking,
                 SessionStartTimeoutSeconds);
 
-            if (ARSession.state != ARSessionState.SessionInitializing &&
-                ARSession.state != ARSessionState.SessionTracking)
+            // Do NOT fail if session hasn't reached SessionInitializing yet —
+            // some devices take longer. AR components are enabled; tracking begins
+            // as soon as the environment is scanned. Only abort on hard failure states.
+            if (ARSession.state == ARSessionState.Unsupported ||
+                ARSession.state == ARSessionState.None)
             {
-                FailStartup($"AR session did not start. State: {ARSession.state}", OnARNotSupported);
+                FailStartup($"AR session failed to start. State: {ARSession.state}", OnARNotSupported);
                 yield break;
             }
 
