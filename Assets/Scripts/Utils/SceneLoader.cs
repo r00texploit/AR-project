@@ -19,6 +19,7 @@ namespace AREducation.Utils
         public const int SceneARLesson        = 1;
         public const int SceneQuiz            = 2;
         public const int SceneTeacherDashboard = 3;
+        public const int SceneLogin           = 4;
 
         void Awake()
         {

@@ -44,9 +44,18 @@ namespace AREducation.UI
         [SerializeField] private Toggle        arToggle;
         [SerializeField] private Button        btnSaveSettings;
         [SerializeField] private Button        btnCloseSettings;
+        [SerializeField] private Button        btnSignOut;
 
         void Start()
         {
+            // Check auth: if Firebase is available and user not authenticated, redirect to login
+            if (FirebaseRestService.Instance != null && FirebaseRestService.Instance.IsAvailable &&
+                !FirebaseRestService.Instance.IsAuthenticated)
+            {
+                SceneLoader.Instance?.LoadScene(SceneLoader.SceneLogin);
+                return;
+            }
+
             // Main menu
             btnStartAR?.onClick.AddListener(() =>
             {
@@ -77,6 +86,11 @@ namespace AREducation.UI
             // Settings
             btnSaveSettings?.onClick.AddListener(SaveSettings);
             btnCloseSettings?.onClick.AddListener(() => settingsPanel?.SetActive(false));
+            btnSignOut?.onClick.AddListener(() =>
+            {
+                FirebaseRestService.Instance?.SignOut();
+                SceneLoader.Instance?.LoadScene(SceneLoader.SceneLogin);
+            });
 
             // Initial visibility
             lessonSelectPanel?.SetActive(false);

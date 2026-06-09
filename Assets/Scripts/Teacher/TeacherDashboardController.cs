@@ -56,13 +56,27 @@ namespace AREducation.Teacher
 
         public void Refresh()
         {
-            if (DataManager.Instance != null)
-                _allResults = DataManager.Instance.GetAllResults();
+            if (FirebaseRestService.Instance != null && FirebaseRestService.Instance.IsAvailable)
+            {
+                if (statusText != null) statusText.text = "Loading from Firebase...";
+                FirebaseRestService.Instance.GetResults(results =>
+                {
+                    _allResults = new List<QuizResult>(results);
+                    if (statusText != null) statusText.text = "";
+                    UpdateProfileText();
+                    ApplyFilter(_currentFilter);
+                });
+            }
             else
-                _allResults = new List<QuizResult>();
+            {
+                if (DataManager.Instance != null)
+                    _allResults = DataManager.Instance.GetAllResults();
+                else
+                    _allResults = new List<QuizResult>();
 
-            UpdateProfileText();
-            ApplyFilter(_currentFilter);
+                UpdateProfileText();
+                ApplyFilter(_currentFilter);
+            }
         }
 
         private void ApplyFilter(string lessonId)
