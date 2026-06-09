@@ -197,8 +197,7 @@ namespace AREducation.UI
         /// </summary>
         private static void EnforceTextColors()
         {
-            foreach (var t in FindObjectsByType<TMP_Text>(
-                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var t in FindObjectsByType<TMP_Text>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
                 Color c = t.color;
                 // Reset to white if the colour is magenta (r≈1, g≈0, b≈1)

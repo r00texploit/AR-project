@@ -77,6 +77,11 @@ namespace AREducation.Data
             StartCoroutine(SignInCoroutine(email, password));
         }
 
+        public void SetDemoMode()
+        {
+            StoreAuth("demo_token", "demo_user", "demo@example.com");
+        }
+
         public void SignOut()
         {
             IdToken = "";
@@ -95,8 +100,9 @@ namespace AREducation.Data
             string json = $"{{\"email\":\"{EscapeJson(email)}\",\"password\":\"{EscapeJson(password)}\",\"returnSecureToken\":true}}";
             byte[] data = Encoding.UTF8.GetBytes(json);
 
-            using UnityWebRequest req = UnityWebRequest.Post(url, "application/json");
+            using UnityWebRequest req = new UnityWebRequest(url, "POST");
             req.uploadHandler = new UploadHandlerRaw(data);
+            req.downloadHandler = new DownloadHandlerBuffer();
             req.SetRequestHeader("Content-Type", "application/json");
             yield return req.SendWebRequest();
 
@@ -126,8 +132,9 @@ namespace AREducation.Data
             string json = $"{{\"email\":\"{EscapeJson(email)}\",\"password\":\"{EscapeJson(password)}\",\"returnSecureToken\":true}}";
             byte[] data = Encoding.UTF8.GetBytes(json);
 
-            using UnityWebRequest req = UnityWebRequest.Post(url, "application/json");
+            using UnityWebRequest req = new UnityWebRequest(url, "POST");
             req.uploadHandler = new UploadHandlerRaw(data);
+            req.downloadHandler = new DownloadHandlerBuffer();
             req.SetRequestHeader("Content-Type", "application/json");
             yield return req.SendWebRequest();
 

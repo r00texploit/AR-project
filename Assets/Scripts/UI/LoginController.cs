@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using AREducation.Data;
 using AREducation.Utils;
 
 namespace AREducation.UI
@@ -71,8 +72,7 @@ namespace AREducation.UI
         private void DemoMode()
         {
             SetStatus("Demo mode: no Firebase required.");
-            FirebaseRestService.Instance.CurrentUserId = "demo_user";
-            FirebaseRestService.Instance.CurrentUserEmail = "demo@example.com";
+            FirebaseRestService.Instance?.SetDemoMode();
             Invoke(nameof(GoToMainMenu), 0.5f);
         }
 

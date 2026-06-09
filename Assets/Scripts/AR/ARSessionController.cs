@@ -163,11 +163,11 @@ namespace AREducation.AR
 
         private void ResolveDependencies()
         {
-            if (arSession == null) arSession = FindFirstObjectByType<ARSession>();
-            if (planeManager == null) planeManager = FindFirstObjectByType<ARPlaneManager>();
-            if (raycastManager == null) raycastManager = FindFirstObjectByType<ARRaycastManager>();
-            if (cameraManager == null) cameraManager = FindFirstObjectByType<ARCameraManager>();
-            if (cameraBackground == null) cameraBackground = FindFirstObjectByType<ARCameraBackground>();
+            if (arSession == null) arSession = FindAnyObjectByType<ARSession>();
+            if (planeManager == null) planeManager = FindAnyObjectByType<ARPlaneManager>();
+            if (raycastManager == null) raycastManager = FindAnyObjectByType<ARRaycastManager>();
+            if (cameraManager == null) cameraManager = FindAnyObjectByType<ARCameraManager>();
+            if (cameraBackground == null) cameraBackground = FindAnyObjectByType<ARCameraBackground>();
         }
 
         private void SetARComponentsEnabled(bool enabled)
