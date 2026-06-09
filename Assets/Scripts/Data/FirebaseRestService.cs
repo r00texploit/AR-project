@@ -19,7 +19,7 @@ namespace AREducation.Data
         public string CurrentUserEmail { get; private set; }
         public string IdToken { get; private set; }
 
-        public UnityEvent<bool, string> OnAuthResult; // success, message
+        public UnityEvent<bool, string> OnAuthResult = new UnityEvent<bool, string>();
 
         private FirebaseConfig _config;
         public bool IsAvailable => _config != null && _config.IsConfigured;

@@ -28,7 +28,8 @@ namespace AREducation.UI
             btnSignUp?.onClick.AddListener(SignUp);
             btnDemoMode?.onClick.AddListener(DemoMode);
 
-            FirebaseRestService.Instance.OnAuthResult.AddListener(OnAuthResult);
+            if (FirebaseRestService.Instance != null)
+                FirebaseRestService.Instance.OnAuthResult.AddListener(OnAuthResult);
 
             SetPanel(false); // Start in sign-in mode
         }
