@@ -25,6 +25,8 @@ namespace AREducation.AR
         private bool _placementEnabled;
         private bool _hasPlaced;
 
+        public bool HasPlaced => _hasPlaced;
+
         public void SetPendingObject(GameObject obj)
         {
             _pendingObject = obj;
