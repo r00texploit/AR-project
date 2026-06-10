@@ -46,6 +46,10 @@ namespace AREducation.Quiz
         [SerializeField] private Color incorrectColor = new Color(0.9f, 0.2f, 0.2f);
         [SerializeField] private Color defaultColor   = Color.white;
 
+        [Header("Passage (optional — auto-created if not wired in Inspector)")]
+        [SerializeField] private GameObject passagePanel;
+        [SerializeField] private TMP_Text   passageText;
+
         [Header("Back")]
         [SerializeField] private Button backButton;
 
@@ -74,6 +78,7 @@ namespace AREducation.Quiz
                 resultPanel?.SetActive(false);
                 quizPanel?.SetActive(true);
                 QuizManager.Instance.LoadQuiz(QuizManager.SelectedLessonId);
+                RefreshPassage();
             });
 
             menuButton?.onClick.AddListener(() =>
@@ -109,7 +114,7 @@ namespace AREducation.Quiz
             {
                 lessonSelectPanel?.SetActive(false);
                 quizPanel?.SetActive(true);
-                // QuizManager.Start() already called LoadQuiz
+                RefreshPassage(); // QuizManager.Start() already called LoadQuiz
             }
             else
             {
@@ -123,6 +128,7 @@ namespace AREducation.Quiz
             lessonSelectPanel?.SetActive(false);
             quizPanel?.SetActive(true);
             QuizManager.Instance.LoadQuiz(lessonId);
+            RefreshPassage();
         }
 
         private void DisplayQuestion(QuizQuestion q, int index, int total)
@@ -170,6 +176,7 @@ namespace AREducation.Quiz
         private void ShowResults(int score, int total)
         {
             quizPanel?.SetActive(false);
+            if (passagePanel != null) passagePanel.SetActive(false);
             resultPanel?.SetActive(true);
 
             if (scoreText != null)
@@ -200,6 +207,57 @@ namespace AREducation.Quiz
                 resultStatusText.text = shared
                     ? "Progress report exported. Choose an app to share it."
                     : "Report export failed. Try again.";
+        }
+
+        private void RefreshPassage()
+        {
+            string passage = QuizManager.Instance?.CurrentPassage ?? "";
+            bool hasPassage = !string.IsNullOrWhiteSpace(passage);
+
+            if (!hasPassage)
+            {
+                if (passagePanel != null) passagePanel.SetActive(false);
+                return;
+            }
+
+            EnsurePassagePanel();
+            passagePanel.SetActive(true);
+            if (passageText != null) passageText.text = passage;
+        }
+
+        private void EnsurePassagePanel()
+        {
+            if (passagePanel != null) return;
+            if (quizPanel == null) return;
+
+            var go = new GameObject("PassagePanel");
+            go.transform.SetParent(quizPanel.transform, false);
+            go.transform.SetAsFirstSibling();
+
+            var bg = go.AddComponent<Image>();
+            bg.color = new Color(0.05f, 0.12f, 0.22f, 0.97f);
+
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = new Vector2(0.02f, 0.60f);
+            rt.anchorMax = new Vector2(0.98f, 0.97f);
+            rt.offsetMin = rt.offsetMax = Vector2.zero;
+
+            var textGO = new GameObject("PassageText");
+            textGO.transform.SetParent(go.transform, false);
+
+            var textRT = (RectTransform)textGO.transform;
+            textRT.anchorMin = Vector2.zero;
+            textRT.anchorMax = Vector2.one;
+            textRT.offsetMin = new Vector2(18, 12);
+            textRT.offsetMax = new Vector2(-18, -12);
+
+            passageText = textGO.AddComponent<TextMeshProUGUI>();
+            passageText.fontSize = 22;
+            passageText.color = new Color(0.92f, 0.96f, 1f);
+            passageText.alignment = TextAlignmentOptions.TopLeft;
+            passageText.overflowMode = TextOverflowModes.Ellipsis;
+
+            passagePanel = go;
         }
 
         private void SetFeedbackVisible(bool show)

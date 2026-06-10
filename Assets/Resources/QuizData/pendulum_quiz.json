@@ -1,44 +1,70 @@
 {
+  "lessonPassage": "Newton's Second Law states that 'the net force acting on an object equals the rate of change of its momentum with respect to time.' Mathematically, this means the object's acceleration is directly proportional to the net force and inversely proportional to its mass.\n\nF = m x a\nF: Net force (Newtons, N)  |  m: Mass (kilograms, kg)  |  a: Acceleration (m/s2)\n\nForce-Acceleration: The greater the force applied, the greater the acceleration — always in the same direction as the force.\nMass-Acceleration: Objects with greater mass require more force to achieve the same acceleration.",
   "questions": [
     {
-      "questionId": "pe_01",
+      "questionId": "pend_001",
       "lessonId": "pendulum",
-      "questionText": "What is the formula for the period of a simple pendulum?",
-      "options": ["T = 2π√(g/L)", "T = 2π√(L/g)", "T = πL/g", "T = 2πLg"],
+      "questionText": "Based on the definition at the start of the passage, what does 'net force acting on an object' equal?",
+      "options": [
+        "The product of the object's mass and its velocity",
+        "The rate of change of the object's momentum with respect to time",
+        "The square of the speed divided by time",
+        "The direction of motion when external forces act on the object"
+      ],
       "correctIndex": 1,
-      "explanation": "The period T = 2π√(L/g), where L is the string length and g is gravitational acceleration."
+      "explanation": "According to the passage: net force = rate of change of momentum with respect to time."
     },
     {
-      "questionId": "pe_02",
+      "questionId": "pend_002",
       "lessonId": "pendulum",
-      "questionText": "If the string length doubles, what happens to the period?",
-      "options": ["It doubles", "It halves", "It increases by √2", "It stays the same"],
-      "correctIndex": 2,
-      "explanation": "T ∝ √L, so doubling L multiplies the period by √2 ≈ 1.41."
+      "questionText": "According to the passage, what is the correct mathematical relationship between acceleration, force, and mass?",
+      "options": [
+        "Proportional to mass and inversely proportional to force",
+        "Proportional to both force and mass",
+        "Inversely proportional to both force and mass",
+        "Proportional to force and inversely proportional to mass"
+      ],
+      "correctIndex": 3,
+      "explanation": "The passage states: acceleration is directly proportional to force and inversely proportional to mass."
     },
     {
-      "questionId": "pe_03",
+      "questionId": "pend_003",
       "lessonId": "pendulum",
-      "questionText": "On the Moon (g ≈ 1.6 m/s²) compared to Earth (g ≈ 9.8 m/s²), the pendulum period is:",
-      "options": ["Shorter", "Longer", "The same", "Zero"],
+      "questionText": "In the equation F = m x a, what unit is used to measure force?",
+      "options": [
+        "Kilogram (kg)",
+        "Newton (N)",
+        "Meter per second squared (m/s2)",
+        "Joule (J)"
+      ],
       "correctIndex": 1,
-      "explanation": "T = 2π√(L/g). Lower g means a longer period. The Moon pendulum swings more slowly."
+      "explanation": "The passage defines F as net force measured in Newtons (N)."
     },
     {
-      "questionId": "pe_04",
+      "questionId": "pend_004",
       "lessonId": "pendulum",
-      "questionText": "Which force drives the oscillation of a simple pendulum?",
-      "options": ["Magnetic force", "Friction", "Gravity component along the arc", "Tension in the string"],
+      "questionText": "According to the passage, what happens to acceleration when a greater force is applied to an object?",
+      "options": [
+        "Acceleration decreases",
+        "Acceleration stays the same",
+        "Acceleration increases in the same direction as the force",
+        "Acceleration increases in the opposite direction of the force"
+      ],
       "correctIndex": 2,
-      "explanation": "The restoring force is the component of gravity tangential to the pendulum's arc: F = -mg sinθ."
+      "explanation": "The passage states: the greater the force, the greater the acceleration — always in the same direction."
     },
     {
-      "questionId": "pe_05",
+      "questionId": "pend_005",
       "lessonId": "pendulum",
-      "questionText": "The small-angle approximation (sinθ ≈ θ) is valid when the initial angle is:",
-      "options": ["Greater than 90°", "About 45°", "Less than ~15°", "Exactly 30°"],
-      "correctIndex": 2,
-      "explanation": "For angles less than ~15°, sinθ ≈ θ (in radians), making the SHM approximation accurate."
+      "questionText": "Based on the passage, why do objects with greater mass require more force to accelerate?",
+      "options": [
+        "Because force is proportional to mass",
+        "Because acceleration is inversely proportional to mass",
+        "Because momentum does not change with mass",
+        "Because velocity is constant regardless of mass"
+      ],
+      "correctIndex": 1,
+      "explanation": "The passage states acceleration is inversely proportional to mass, so more mass means more force is needed for the same acceleration."
     }
   ]
 }

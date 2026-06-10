@@ -47,6 +47,7 @@ namespace AREducation.Data
     [Serializable]
     public class QuizQuestionList
     {
+        public string lessonPassage;   // optional reading passage shown above questions
         public QuizQuestion[] questions;
     }
 

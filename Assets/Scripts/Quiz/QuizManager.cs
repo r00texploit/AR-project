@@ -16,6 +16,8 @@ namespace AREducation.Quiz
         // Set by MainMenuController before loading the Quiz scene
         public static string SelectedLessonId = "triangle";
 
+        public string CurrentPassage { get; private set; } = "";
+
         private List<QuizQuestion> _questions = new List<QuizQuestion>();
         private int  _currentIndex;
         private int  _score;
@@ -55,6 +57,7 @@ namespace AREducation.Quiz
                 return;
             }
 
+            CurrentPassage = data.lessonPassage ?? "";
             _questions = new List<QuizQuestion>(data.questions);
             Shuffle();
             ShowCurrent();
