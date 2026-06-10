@@ -68,6 +68,14 @@ namespace AREducation.Utils
             yield return new WaitForSeconds(0.15f);
 
             op.allowSceneActivation = true;
+
+            // The loading canvas lives under this DontDestroyOnLoad object, so it
+            // survives the scene swap — hide it once the new scene is active.
+            while (!op.isDone)
+                yield return null;
+
+            if (loadingCanvas != null)
+                loadingCanvas.gameObject.SetActive(false);
         }
     }
 }
